@@ -12,7 +12,7 @@ public class Book {
     @GeneratedValue
     public UUID id;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false, length = 40, unique = true)
     public String title;
 
     @OneToOne//(targetEntity=Entity.Author)

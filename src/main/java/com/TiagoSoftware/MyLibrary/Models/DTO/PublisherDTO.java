@@ -14,6 +14,6 @@ public class PublisherDTO {
     public String name;
 
     @NotBlank
-    @Size(max = 14)
+    @Size(max = 18)
     public String cnpj;
 }

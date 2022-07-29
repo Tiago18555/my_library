@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
+
 @Service
 public class AuthService {
 
@@ -65,8 +67,9 @@ public class AuthService {
                 return new ResponseModel("Error: Incorrect username or password!", HttpStatus.UNAUTHORIZED);
             }
 
-            Auth user = dbset.findByUsername(auth.getUsername());
-            String token = jwtService.generateToken( user .getUserId() .toString() );
+            Auth user = dbset
+                    .findByUsername(auth.getUsername());
+            String token = jwtService.generateToken( user.getUserId().toString() );
             return new ResponseModel(token, HttpStatus.OK);
         }
         catch(Exception ex){

@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.Date;
 
 @Service
-//@Data
+@Data
 public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
@@ -26,17 +27,22 @@ public class JwtService {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + this.jwtExpirationInMs))
-                .signWith(SignatureAlgorithm.HS512, this.secret).compact();
+                .signWith(SignatureAlgorithm.HS512, Base64
+                        .getEncoder()
+                        .encodeToString(this.secret
+                                .getBytes())
+                        )
+                        .compact();
     }
-
+/*
     public ResponseModel validateToken(String authToken) throws ExpiredJwtException {
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey().parseClaimsJws(authToken);
             return new ResponseModel("Jwt válido", HttpStatus.OK);
         } catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
             return new ResponseModel(ex.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (ExpiredJwtException ex) {
             return new ResponseModel(ex.getMessage(), HttpStatus.UNAUTHORIZED);
         }
-    }
+    }*/
 }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {
@@ -21,15 +22,26 @@ public class AuthorService {
     }
 
     @Transactional
-    public ResponseModel RegisterNewAuthor(AuthorDTO authorDTO) {
+    public ResponseModel registerNewAuthor(AuthorDTO authorDTO) {
         var author = new Author();
         BeanUtils.copyProperties(authorDTO, author);
         try{
+            if ( dbset.findByName(author.getName()) != null ) {
+                return new ResponseModel("This author already exists", HttpStatus.FORBIDDEN);
+            };
             return new ResponseModel(dbset.save(author), HttpStatus.CREATED);
         }
         catch(Exception ex){
             throw ex;
-            //return new ResponseModel(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseModel listAuthors(){
+        try{
+            return new ResponseModel(dbset.findAll().stream().collect(Collectors.toList()), HttpStatus.OK);
+        }
+        catch(Exception ex){
+            throw ex;
         }
     }
 }

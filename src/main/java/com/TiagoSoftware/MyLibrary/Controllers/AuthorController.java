@@ -2,6 +2,7 @@ package com.TiagoSoftware.MyLibrary.Controllers;
 
 import com.TiagoSoftware.MyLibrary.Models.DTO.AuthorDTO;
 import com.TiagoSoftware.MyLibrary.Services.AuthorService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +18,18 @@ public class AuthorController {
     private AuthorService authorService;
 
     @PostMapping
-    public ResponseEntity<Object> RegisterNewUser(@RequestBody @Valid AuthorDTO authorDTO){
-        var response = authorService.RegisterNewAuthor(authorDTO);
+    @ApiOperation(value="Registra um novo autor")
+    public ResponseEntity registerAuthor(@RequestBody @Valid AuthorDTO authorDTO){
+        var response = authorService.registerNewAuthor(authorDTO);
 
-        return ResponseEntity
-                .status(response.getHttpstatus())
-                .body(response.getData());
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @GetMapping
+    @ApiOperation(value="Lista todos os autores cadastrados")
+    public ResponseEntity listAuthors(){
+        var response = authorService.listAuthors();
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
     }
 }
