@@ -2,10 +2,12 @@ package com.TiagoSoftware.MyLibrary.Models.Entity;
 
 import lombok.Data;
 
+
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Table(name = "book")
 @Data
 public class Book {
     @Id
@@ -15,12 +17,14 @@ public class Book {
     @Column(nullable = false, length = 40, unique = true)
     public String title;
 
-    @OneToOne//(targetEntity=Entity.Author)
-    public Author authorId;
+    @OneToOne
+    public Author author;
 
-    @OneToOne//(targetEntity=Entity.Author)
-    public Publisher publisherId;
+    @OneToOne
+    public Publisher publisher;
 
-    public short availableAmount;
+    public String description;
+
+    public int availableAmount;
 }
 

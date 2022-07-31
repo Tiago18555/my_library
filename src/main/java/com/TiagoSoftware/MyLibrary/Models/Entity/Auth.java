@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Table(name = "auth")
 public class Auth implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
 

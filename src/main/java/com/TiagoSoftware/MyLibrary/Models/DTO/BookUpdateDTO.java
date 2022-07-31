@@ -10,9 +10,8 @@ import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Data
-public class BookDTO {
+public class BookUpdateDTO{
 
-    @NotBlank
     @Size(min = 3)
     @Size(max = 40)
     public String title;
@@ -25,6 +24,6 @@ public class BookDTO {
 
     public String description;
 
-    public int availableAmount = 1;
+    public int availableAmount;
 }
 

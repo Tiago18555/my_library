@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class AuthorService {
     @Autowired
-    AuthorRepository dbset;
+    private final AuthorRepository dbset;
 
     public AuthorService(AuthorRepository dbset) {
         this.dbset = dbset;

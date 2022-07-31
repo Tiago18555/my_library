@@ -2,12 +2,15 @@ package com.TiagoSoftware.MyLibrary.Models.Entity;
 
 import lombok.Data;
 
+
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Data
+@Table(name = "client")
 public class Client {
     @Id
     @GeneratedValue
