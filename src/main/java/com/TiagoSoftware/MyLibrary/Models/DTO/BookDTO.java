@@ -18,4 +18,6 @@ public class BookDTO {
     public Author authorId;
 
     public Publisher publisherId;
+
+    public short availableAmount;
 }

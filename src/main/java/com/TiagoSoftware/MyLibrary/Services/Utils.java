@@ -5,7 +5,6 @@ import org.springframework.beans.BeanUtils;
 import java.util.List;
 
 public class Utils<T> {
-    //BeanUtils.copyProperties(authDTO, auth);
 
     public List copyAllTheseProperties(List<T> source, List<Object> target){
         for(Object objectItem : source){

@@ -67,4 +67,5 @@ public class Auth implements UserDetails, Serializable {
     public boolean isEnabled() {
         return true;
     }
+
 }

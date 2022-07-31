@@ -6,12 +6,16 @@ import com.TiagoSoftware.MyLibrary.Services.AuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/")
@@ -33,9 +37,16 @@ public class AuthController {
 
     @PostMapping(path = "/login")
     @ApiOperation(value="Autentica um novo utilizador do sistema")
-    public ResponseEntity<ResponseModel> auth(@RequestBody @Valid AuthDTO authDTO){
-        var response = authService.Login(authDTO);
+    public ResponseEntity<ResponseModel> auth(@RequestBody @Valid AuthDTO authDTO) throws Exception {
+        var res = authService.Login(authDTO);
 
-        return new ResponseEntity<>(response, response.getHttpstatus());
+        //var response = new ResponseEntity<>(res.getData(), res.getHttpstatus());
+
+        return new ResponseEntity<>(res, res.getHttpstatus());
+
+                //.header( HttpHeaders.AUTHORIZATION, res.getToken().get() )
+                //.body(response);
+
+        //return new ResponseEntity<>(response, response.getHttpstatus() );
     }
 }

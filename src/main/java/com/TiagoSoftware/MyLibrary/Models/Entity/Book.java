@@ -20,5 +20,7 @@ public class Book {
 
     @OneToOne//(targetEntity=Entity.Author)
     public Publisher publisherId;
+
+    public short availableAmount;
 }
 
