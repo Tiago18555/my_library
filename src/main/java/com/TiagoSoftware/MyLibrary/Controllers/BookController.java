@@ -46,7 +46,7 @@ public class BookController {
 
     @GetMapping("/{title}")
     @ApiOperation(value="Exibe as informações detalhadas de um livro")
-    public ResponseEntity getBookById(String title) {
+    public ResponseEntity getBookById(@PathVariable String title) {
         var response = bookService.getBookByTitle(title);
 
         return new ResponseEntity<>(response, response.getHttpstatus());

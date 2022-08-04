@@ -2,9 +2,12 @@ package com.TiagoSoftware.MyLibrary.Configuration;
 
 import com.TiagoSoftware.MyLibrary.Component.JwtTokenFilter;
 import com.TiagoSoftware.MyLibrary.Repositories.AuthRepository;
+import com.TiagoSoftware.MyLibrary.Services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,9 +30,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         private final AuthRepository userRepo;
         private final JwtTokenFilter jwtTokenFilter;
 
+    @Autowired
+    private UserService userDetailsService;
+
     public SecurityConfig(AuthRepository userRepo, JwtTokenFilter jwtTokenFilter) {
         this.userRepo = userRepo;
         this.jwtTokenFilter = jwtTokenFilter;
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -42,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
 
-        http = http.cors().disable();
+        //http = http.cors().disable();
         http = http.csrf().disable();
 
         http = http

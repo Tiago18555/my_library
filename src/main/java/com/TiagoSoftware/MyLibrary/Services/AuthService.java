@@ -11,9 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,11 +34,15 @@ public class AuthService {
     private final SecurityConfig bcrypt;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private final AuthenticationManager authenticationManager;
 
-    public AuthService(AuthRepository dbset, JwtService jwtService, SecurityConfig bcrypt, AuthenticationManager authenticationManager) {
+    public AuthService(AuthRepository dbset, JwtService jwtService, SecurityConfig bcrypt, AuthenticationManager authenticationManager, UserService userService) {
         this.dbset = dbset;
         this.jwtService = jwtService;
+        this.userService = userService;
         this.bcrypt = bcrypt;
         this.authenticationManager = authenticationManager;
     }
@@ -64,6 +75,15 @@ public class AuthService {
         BeanUtils.copyProperties(authDTO, auth);
 
         try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(auth.getUsername(), auth.getPassword())
+            );
+
+            UserDetails userdetails = userService.loadUserByUsername(auth.getUsername());
+            String token = jwtService.generateToken(userdetails.getUsername());
+
+
+            /*
             if(auth.getUsername() == null || auth.getPassword() == null) {
                 return new ResponseModel("Error: Username or password must not be empty!", HttpStatus.BAD_REQUEST);
             }
@@ -78,12 +98,8 @@ public class AuthService {
                     .orElseThrow(() -> new RuntimeException("NULL NESSE FIND")));
 
             String token = jwtService.generateToken( user.get().getUsername() );
-
-            /*
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(auth, null)
-            );
             */
+
 
 
             return new ResponseModel(

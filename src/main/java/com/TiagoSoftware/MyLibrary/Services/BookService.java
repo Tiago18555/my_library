@@ -5,19 +5,19 @@ import com.TiagoSoftware.MyLibrary.Models.DTO.BookUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Author;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Publisher;
-import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBookResponseModel;
+import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.JoinBookResponseModel;
+import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.PublisherResponse;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.BookRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -89,27 +89,49 @@ public class BookService {
     public ResponseModel listBooks(Optional<String> author, Optional<String> publisher){
         System.out.println(author.orElse(null) + "\n" + publisher.orElse(null));
         try{
-            //JoinBookResponseModel joinBookResponseModel = new JoinBookResponseModel();
             if(author.isPresent() && publisher.isPresent()) {
                 return new ResponseModel("Use just one search filter per request", HttpStatus.BAD_REQUEST);
             }
+
+            List<JoinBookResponseModel> data = new ArrayList<>();
+            List<Book> books = new ArrayList<>();
+
             if(author.isPresent()) {
-                return new ResponseModel(dbset
+                    books = dbset
                         .findAllCompletly()
                         .stream()
-                        .filter( x -> !x.getAuthorName().equals( author.get() ) )
-                    , HttpStatus.OK);
+                        .filter( x -> x.getAuthor().getName().equals ( author.get() ) )
+                        .toList();
             }
+
             if(publisher.isPresent()) {
-                return new ResponseModel(dbset
+                    books = dbset
                         .findAllCompletly()
                         .stream()
-                        .filter( x -> !x.getPublisherName().equals( publisher.get() ) )
-                    , HttpStatus.OK
-                );
+                        .filter( x -> x.getPublisher().getName().equals ( publisher.get() ) )
+                        .toList();
             }
-        //if it doesn't have any Query Parameter
-            return new ResponseModel(dbset.findAll().stream().collect(Collectors.toList()), HttpStatus.OK);
+
+            if(publisher.isEmpty() && author.isEmpty()) {
+                    books = dbset.findAllCompletly();
+            }
+
+            for(Book book : books){
+                JoinBookResponseModel target = new JoinBookResponseModel();
+
+                target.setTitle(book.getTitle());
+                target.setAuthorName(book.getAuthor().getName());
+                target.setPublisher( new PublisherResponse(
+                        book.getPublisher().getName(),
+                        book.getPublisher().getCnpj()
+                ));
+                target.setDescription(book.getDescription());
+                target.setAvailableAmount(book.getAvailableAmount());
+
+                data.add(target);
+            }
+
+            return new ResponseModel(data, HttpStatus.OK);
         }
         catch(Exception ex){
             throw ex;
@@ -153,10 +175,22 @@ public class BookService {
     }
 
     public ResponseModel getBookByTitle(String title) {
-        Book foundBook = dbset.findByTitle(title);
-        if(foundBook == null || foundBook.getTitle().isEmpty()) {
+        Book book = dbset.findByTitle(title);
+        if(book == null || book.getTitle().isEmpty()) {
             return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
         }
-        return new ResponseModel(foundBook, HttpStatus.OK);
+
+        JoinBookResponseModel data = new JoinBookResponseModel();
+
+        data.setTitle(book.getTitle());
+        data.setAuthorName(book.getAuthor().getName());
+        data.setPublisher( new PublisherResponse(
+                book.getPublisher().getName(),
+                book.getPublisher().getCnpj()
+        ));
+        data.setDescription(book.getDescription());
+        data.setAvailableAmount(book.getAvailableAmount());
+
+        return new ResponseModel(data, HttpStatus.OK);
     }
 }
