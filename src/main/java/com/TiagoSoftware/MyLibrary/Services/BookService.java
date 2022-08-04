@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -101,7 +102,7 @@ public class BookService {
                         .findAllCompletly()
                         .stream()
                         .filter( x -> x.getAuthor().getName().equals ( author.get() ) )
-                        .toList();
+                        .collect(Collectors.toList());
             }
 
             if(publisher.isPresent()) {
@@ -109,7 +110,7 @@ public class BookService {
                         .findAllCompletly()
                         .stream()
                         .filter( x -> x.getPublisher().getName().equals ( publisher.get() ) )
-                        .toList();
+                        .collect(Collectors.toList());
             }
 
             if(publisher.isEmpty() && author.isEmpty()) {
