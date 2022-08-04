@@ -53,8 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
 
-        //http = http.cors().disable();
-        http = http.csrf().disable();
+        http = http.cors().and().csrf().disable();
 
         http = http
                 .sessionManagement()
@@ -96,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         );
     }
 
-    /*
+/*
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source =
@@ -110,7 +109,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new CorsFilter(source);
     }
 
-     */
+ */
 
     @Bean
     public PasswordEncoder passwordEncoder() {
