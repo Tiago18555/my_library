@@ -1,6 +1,7 @@
 package com.TiagoSoftware.MyLibrary.Services;
 
 import com.TiagoSoftware.MyLibrary.Configuration.SecurityConfig;
+import com.TiagoSoftware.MyLibrary.Models.DTO.ValidateDTO;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Auth;
 import com.TiagoSoftware.MyLibrary.Models.DTO.AuthDTO;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
@@ -11,16 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -48,7 +43,7 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseModel RegisterNewUser(AuthDTO authDTO) {
+    public ResponseModel registerNewUser(AuthDTO authDTO) {
         var auth = new Auth();
         BeanUtils.copyProperties(authDTO, auth);
         try{
@@ -70,7 +65,7 @@ public class AuthService {
         }
     }
 
-    public ResponseModel Login(AuthDTO authDTO){
+    public ResponseModel login(AuthDTO authDTO){
         var auth = new Auth();
         BeanUtils.copyProperties(authDTO, auth);
 
@@ -116,5 +111,12 @@ public class AuthService {
             //throw ex;
             return new ResponseModel(ex.getMessage(), HttpStatus.UNAUTHORIZED);
         }
+    }
+    public ResponseModel validateJwt(ValidateDTO validateDTO) {
+        //return new ResponseModel(
+        if (!jwtService.validate(validateDTO.getToken())) {
+            return new ResponseModel("Token expirado ou inválido.", HttpStatus.FORBIDDEN);
+        }
+        return new ResponseModel("Token válido.", HttpStatus.OK);
     }
 }
