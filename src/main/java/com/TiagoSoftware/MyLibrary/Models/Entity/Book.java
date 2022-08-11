@@ -23,6 +23,7 @@ public class Book {
     @OneToOne
     public Publisher publisher;
 
+    @Column(length = 2048)
     public String description;
 
     public int availableAmount;
