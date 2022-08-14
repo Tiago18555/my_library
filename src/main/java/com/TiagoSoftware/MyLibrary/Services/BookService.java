@@ -148,6 +148,8 @@ public class BookService {
         Publisher publisher = new Publisher();
         publisher.setId(bookDTO.getPublisher());
 
+        book.setId(bookDTO.getId());
+
         book.setTitle(bookDTO.getTitle() != null ? bookDTO.getTitle() : null);
 
         book.setAuthor(author.getId() != null ? author : null);
@@ -183,6 +185,7 @@ public class BookService {
 
         JoinBookResponseModel data = new JoinBookResponseModel();
 
+        data.setId(Optional.of(book.getId()));
         data.setTitle(book.getTitle());
         data.setAuthorName(book.getAuthor().getName());
         data.setPublisher( new PublisherResponse(
