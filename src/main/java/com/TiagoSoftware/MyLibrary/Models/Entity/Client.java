@@ -25,7 +25,7 @@ public class Client {
     @Column(nullable = false)
     public Boolean isProfessor;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     public float loan;
 
     @OneToMany
