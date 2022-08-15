@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -49,6 +50,14 @@ public class StudentController {
     @ApiOperation(value="Exibe as informações detalhadas de um aluno")
     public ResponseEntity getStudentById(@PathVariable String name) {
         var response = studentService.getStudentByName(name);
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Altera o aluno para inativo")
+    public ResponseEntity deleteStudent(@PathVariable UUID id) {
+        var response = studentService.deleteStudentById(id);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }

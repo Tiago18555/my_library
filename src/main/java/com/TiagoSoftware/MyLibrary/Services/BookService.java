@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -196,5 +197,15 @@ public class BookService {
         data.setAvailableAmount(book.getAvailableAmount());
 
         return new ResponseModel(data, HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseModel deleteBookById(UUID id) {
+        var book = dbset.findById(id);
+        if(book == null) {
+            return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
+        }
+        dbset.delete(book.get());
+        return new ResponseModel("Book has deleted.", HttpStatus.OK);
     }
 }

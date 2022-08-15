@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -29,6 +30,14 @@ public class AuthorController {
     @ApiOperation(value="Lista todos os autores cadastrados")
     public ResponseEntity listAuthors(){
         var response = authorService.listAuthors();
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Exclui um(a) autor(a) da base de dados")
+    public ResponseEntity deleteAuthor(@PathVariable UUID id) {
+        var response = authorService.deleteAuthorById(id);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }

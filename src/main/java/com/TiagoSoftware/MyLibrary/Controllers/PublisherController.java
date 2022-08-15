@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -29,6 +30,14 @@ public class PublisherController {
     @ApiOperation(value="Lista todos os editoras cadastradas")
     public ResponseEntity listPublishers(){
         var response = publisherService.listPublishers();
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Exclui uma editora da base de dados")
+    public ResponseEntity deletePublisher(@PathVariable UUID id) {
+        var response = publisherService.deletePublisherById(id);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }

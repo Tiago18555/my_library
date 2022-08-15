@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,5 +83,17 @@ public class StudentService {
         }
 
         return new ResponseModel(data, HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseModel deleteStudentById(UUID id) {
+        var student = dbset.findById(id);
+        if(student == null) {
+            return new ResponseModel("Student not found.", HttpStatus.NOT_FOUND);
+        }
+
+        student.get().setIsInactive(true);
+        dbset.save(student.get());
+        return new ResponseModel("Student has deleted.", HttpStatus.OK);
     }
 }

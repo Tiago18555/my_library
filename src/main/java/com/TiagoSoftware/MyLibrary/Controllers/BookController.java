@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -48,6 +49,14 @@ public class BookController {
     @ApiOperation(value="Exibe as informações detalhadas de um livro")
     public ResponseEntity getBookById(@PathVariable String title) {
         var response = bookService.getBookByTitle(title);
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Exclui um livro da base de dados")
+    public ResponseEntity deleteBook(@PathVariable UUID id) {
+        var response = bookService.deleteBookById(id);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }

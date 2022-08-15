@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,5 +54,15 @@ public class PublisherService {
         catch(Exception ex){
             throw ex;
         }
+    }
+
+    @Transactional
+    public ResponseModel deletePublisherById(UUID id) {
+        var publisher = dbset.findById(id);
+        if(publisher == null) {
+            return new ResponseModel("Publisher not found.", HttpStatus.NOT_FOUND);
+        }
+        dbset.delete(publisher.get());
+        return new ResponseModel("Publisher has deleted.", HttpStatus.OK);
     }
 }

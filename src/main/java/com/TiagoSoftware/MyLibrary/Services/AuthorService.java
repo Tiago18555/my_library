@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,5 +44,15 @@ public class AuthorService {
         catch(Exception ex){
             throw ex;
         }
+    }
+
+    @Transactional
+    public ResponseModel deleteAuthorById(UUID id) {
+        var author = dbset.findById(id);
+        if(author == null) {
+            return new ResponseModel("Author not found.", HttpStatus.NOT_FOUND);
+        }
+        dbset.delete(author.get());
+        return new ResponseModel("Author has deleted.", HttpStatus.OK);
     }
 }
