@@ -30,28 +30,6 @@ public class BookService {
     public BookService(BookRepository dbset) {
         this.dbset = dbset;
     }
-/*
-    private Book BookSerializer(Class<? extends BaseBookDTO> bookDTO) {
-
-        var book = new Book();
-
-        Author author = new Author();
-        author.setId(bookDTO.getAuthor());
-        Publisher publisher = new Publisher();
-        publisher.setId(bookDTO.getPublisher());
-
-        book.setTitle(bookDTO.getTitle() != null ? bookDTO.getTitle() : null);
-
-        book.setAuthor(author.getId() != null ? author : null);
-        book.setPublisher(publisher.getId() != null ? publisher : null);
-
-        book.setDescription(bookDTO.getDescription() != null ? bookDTO.getDescription() : null);
-        book.setAvailableAmount(bookDTO.getAvailableAmount() == 0 ? bookDTO.getAvailableAmount() : 1);
-
-        return book;
-    }
-*/
-
 
     @Transactional
     public ResponseModel registerNewBook(BookDTO bookDTO) {

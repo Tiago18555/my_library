@@ -1,6 +1,8 @@
 package com.TiagoSoftware.MyLibrary.Controllers;
 
+import com.TiagoSoftware.MyLibrary.Models.DTO.AuthorUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.PublisherDTO;
+import com.TiagoSoftware.MyLibrary.Models.DTO.PublisherUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Services.PublisherService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,14 @@ public class PublisherController {
     @ApiOperation(value = "Exclui uma editora da base de dados")
     public ResponseEntity deletePublisher(@PathVariable UUID id) {
         var response = publisherService.deletePublisherById(id);
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @PutMapping
+    @ApiOperation(value="Altera um registro de uma editora cadastrada")
+    public ResponseEntity editPublisher(@RequestBody @Valid PublisherUpdateDTO publisherUpdateDTO) {
+        var response = publisherService.editPublisher(publisherUpdateDTO);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }

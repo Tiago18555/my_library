@@ -7,7 +7,9 @@ import com.TiagoSoftware.MyLibrary.Models.DTO.ClientUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Services.BookService;
 import com.TiagoSoftware.MyLibrary.Services.StudentService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +34,9 @@ public class StudentController {
 
     @GetMapping
     @ApiOperation(value="Lista todos os alunos cadastrados")
-    public ResponseEntity listStudent() {
-        var response = studentService.listStudents();
+    @ApiParam(value="Lista todos os alunos incluindo os \"inativos\" na base de dados")
+    public ResponseEntity listStudent(@RequestParam Optional<Boolean> showInactive) {
+        var response = studentService.listStudents(showInactive);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
@@ -46,18 +49,18 @@ public class StudentController {
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
 
-    @GetMapping("/{title}")
+    @GetMapping("/{cpf}")
     @ApiOperation(value="Exibe as informações detalhadas de um aluno")
-    public ResponseEntity getStudentById(@PathVariable String name) {
-        var response = studentService.getStudentByName(name);
+    public ResponseEntity getStudentById(@PathVariable String cpf) {
+        var response = studentService.getStudentByCpf(cpf);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Altera o aluno para inativo")
-    public ResponseEntity deleteStudent(@PathVariable UUID id) {
-        var response = studentService.deleteStudentById(id);
+    public ResponseEntity deleteStudent(@PathVariable UUID id, @RequestParam Optional<Boolean> restore) {
+        var response = studentService.deleteStudentById(id, restore);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }

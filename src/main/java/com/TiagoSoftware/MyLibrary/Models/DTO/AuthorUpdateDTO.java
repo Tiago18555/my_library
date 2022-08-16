@@ -2,19 +2,15 @@ package com.TiagoSoftware.MyLibrary.Models.DTO;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @Data
-public class PublisherDTO {
+public class AuthorUpdateDTO {
 
-    @NotBlank
     @Size(min = 3)
     @Size(max = 40)
     public String name;
 
-    @NotBlank
-    @Size(max = 18)
-    public String cnpj;
+    public UUID id;
 }
-
