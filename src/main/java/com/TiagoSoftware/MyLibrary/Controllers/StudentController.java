@@ -1,15 +1,12 @@
 package com.TiagoSoftware.MyLibrary.Controllers;
 
-import com.TiagoSoftware.MyLibrary.Models.DTO.BookDTO;
-import com.TiagoSoftware.MyLibrary.Models.DTO.BookUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientUpdateDTO;
-import com.TiagoSoftware.MyLibrary.Services.BookService;
+import com.TiagoSoftware.MyLibrary.Services.ConfigurationService;
 import com.TiagoSoftware.MyLibrary.Services.StudentService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +19,15 @@ import java.util.UUID;
 @RequestMapping("/student")
 public class StudentController {
     @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
+    @Autowired
+    private final ConfigurationService configurationService;
+
+    public StudentController(StudentService studentService, ConfigurationService configurationService) {
+        this.studentService = studentService;
+        this.configurationService = configurationService;
+    }
+
 
     @PostMapping("/register")
     @ApiOperation(value="Registra um novo aluno")

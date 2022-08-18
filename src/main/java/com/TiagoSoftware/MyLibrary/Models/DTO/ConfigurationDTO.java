@@ -1,25 +1,16 @@
-package com.TiagoSoftware.MyLibrary.Models.Entity;
+package com.TiagoSoftware.MyLibrary.Models.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.util.Date;
-import java.util.UUID;
 
-@Entity
 @Data
-@Table(name = "configuration")
-public class Configuration {
-
-    @Id
-    @GeneratedValue
-    public UUID id;
-
-    public Date startedAt;
+@AllArgsConstructor
+@NoArgsConstructor
+public class ConfigurationDTO {
 
     @Min(1)
     @Max(365)
@@ -28,5 +19,3 @@ public class Configuration {
     @Max(100)
     public Double assessment;
 }
-
-

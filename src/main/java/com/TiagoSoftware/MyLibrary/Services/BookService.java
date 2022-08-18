@@ -50,7 +50,7 @@ public class BookService {
         book.setPublisher(publisher);
 
         book.setDescription(bookDTO.getDescription() != null ? bookDTO.getDescription() : null);
-        book.setAvailableAmount(bookDTO.getAvailableAmount() == 0 ? bookDTO.getAvailableAmount() : 1);
+        book.setAvailableAmount(bookDTO.getAvailableAmount() != 0 ? bookDTO.getAvailableAmount() : 1);
 
 
 
@@ -66,8 +66,7 @@ public class BookService {
         }
     }
 
-    public ResponseModel listBooks(Optional<String> author, Optional<String> publisher){
-        System.out.println(author.orElse(null) + "\n" + publisher.orElse(null));
+    public ResponseModel listBooks(Optional<String> author, Optional<String> publisher, Optional<Boolean> onlyAvailable){
         try{
             if(author.isPresent() && publisher.isPresent()) {
                 return new ResponseModel("Use just one search filter per request", HttpStatus.BAD_REQUEST);
@@ -76,29 +75,39 @@ public class BookService {
             List<JoinBookResponseModel> data = new ArrayList<>();
             List<Book> books = new ArrayList<>();
 
-            if(author.isPresent()) {
-                    books = dbset
-                        .findAllCompletly()
-                        .stream()
-                        .filter( x -> x.getAuthor().getName().equals ( author.get() ) )
-                        .collect(Collectors.toList());
+            if(author.isPresent() && publisher.isEmpty() && onlyAvailable.isEmpty()) {
+                books = dbset
+                    .findAllCompletly()
+                    .stream()
+                    .filter( x -> x.getAuthor().getName().equals ( author.get() ) )
+                    .collect(Collectors.toList());
             }
 
-            if(publisher.isPresent()) {
-                    books = dbset
-                        .findAllCompletly()
-                        .stream()
-                        .filter( x -> x.getPublisher().getName().equals ( publisher.get() ) )
-                        .collect(Collectors.toList());
+            if(publisher.isPresent() && author.isEmpty() && onlyAvailable.isEmpty()) {
+                books = dbset
+                    .findAllCompletly()
+                    .stream()
+                    .filter( x -> x.getPublisher().getName().equals ( publisher.get() ) )
+                    .collect(Collectors.toList());
             }
+
 
             if(publisher.isEmpty() && author.isEmpty()) {
+                if(onlyAvailable.isPresent() && onlyAvailable.get().equals(true) ) {
+                    books = dbset
+                        .findAllCompletly()
+                        .stream()
+                        .filter( x -> x.getAvailableAmount() > 1)
+                        .collect(Collectors.toList());
+                } else {
                     books = dbset.findAllCompletly();
+                }
             }
 
             for(Book book : books){
                 JoinBookResponseModel target = new JoinBookResponseModel();
 
+                target.setId(Optional.of(book.getId()));
                 target.setTitle(book.getTitle());
                 target.setAuthorName(book.getAuthor().getName());
                 target.setPublisher( new PublisherResponse(
@@ -180,7 +189,7 @@ public class BookService {
     @Transactional
     public ResponseModel deleteBookById(UUID id) {
         var book = dbset.findById(id);
-        if(book == null) {
+        if(book.isEmpty()) {
             return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
         }
         dbset.delete(book.get());

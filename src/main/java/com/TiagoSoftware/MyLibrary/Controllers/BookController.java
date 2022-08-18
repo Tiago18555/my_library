@@ -3,7 +3,6 @@ package com.TiagoSoftware.MyLibrary.Controllers;
 import com.TiagoSoftware.MyLibrary.Models.DTO.AuthorDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.BookDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.BookUpdateDTO;
-import com.TiagoSoftware.MyLibrary.Services.AuthorService;
 import com.TiagoSoftware.MyLibrary.Services.BookService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +29,9 @@ public class BookController {
     }
 
     @GetMapping
-    @ApiOperation(value="Lista todos os livros cadastrados")
-    public ResponseEntity listBooks(@RequestParam Optional<String> author, @RequestParam Optional<String> publisher) {
-        var response = bookService.listBooks(author, publisher);
+    @ApiOperation(value="Lista todos os livros cadastrados", notes = "Apenas um dos parâmetros de filtro deve estar presente.")
+    public ResponseEntity listBooks(@RequestParam Optional<String> author, @RequestParam Optional<String> publisher, @RequestParam Optional<Boolean> onlyAvailable) {
+        var response = bookService.listBooks(author, publisher, onlyAvailable);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
