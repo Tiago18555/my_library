@@ -59,4 +59,12 @@ public class BookController {
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
+
+    @GetMapping("/ibsn")
+    @ApiOperation(value = "FOR DEBUG: LIST ALL IBSN'S")
+    public ResponseEntity listAllIbsns() {
+        var response = bookService.listAllIBSNS();
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
 }

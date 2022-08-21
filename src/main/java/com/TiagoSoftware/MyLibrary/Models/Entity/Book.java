@@ -4,6 +4,7 @@ import lombok.Data;
 
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,5 +31,8 @@ public class Book {
     public Borrowing borrowing;
 
     public int availableAmount;
+
+    @OneToMany
+    public List<BookUnit> units;
 }
 

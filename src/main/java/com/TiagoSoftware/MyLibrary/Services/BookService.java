@@ -1,14 +1,17 @@
 package com.TiagoSoftware.MyLibrary.Services;
 
 import com.TiagoSoftware.MyLibrary.Models.DTO.BookDTO;
+import com.TiagoSoftware.MyLibrary.Models.DTO.BookUnitDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.BookUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Author;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
+import com.TiagoSoftware.MyLibrary.Models.Entity.BookUnit;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Publisher;
 import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.JoinBookResponseModel;
 import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.PublisherResponse;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.BookRepository;
+import com.TiagoSoftware.MyLibrary.Repositories.BookUnitRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,8 +30,12 @@ public class BookService {
     @Autowired
     private final BookRepository dbset;
 
-    public BookService(BookRepository dbset) {
+    @Autowired
+    private final BookUnitRepository unitRepo;
+
+    public BookService(BookRepository dbset, BookUnitRepository unitRepo) {
         this.dbset = dbset;
+        this.unitRepo = unitRepo;
     }
 
     @Transactional
@@ -55,14 +62,24 @@ public class BookService {
 
 
         try {
-            if (dbset.findByTitle(book.getTitle()) != null) {
+            if (dbset.findByTitle(book.getTitle()).isPresent()) {
                 return new ResponseModel("This books is already exists. Did you meant to change his quantity?", HttpStatus.FORBIDDEN);
             }
-            return new ResponseModel(dbset.save(book), HttpStatus.CREATED);
+            var data = dbset.save(book);
+            List<BookUnit> data2 = null;
+
+            for(int i = 0; i < book.getAvailableAmount(); i++) {
+                var unitDTO = new BookUnitDTO(book, null);
+                var unit = new BookUnit();
+                BeanUtils.copyProperties(unitDTO, unit);
+                System.out.println(unit.getIbsn());
+                unitRepo.save(unit);
+            }
+            return new ResponseModel(data, HttpStatus.CREATED);
         }
         catch(Exception ex){
-            // throw ex;
-            return new ResponseModel("An error occurs: " + ex.getMessage() + "\n" + ex.getCause(), HttpStatus.SERVICE_UNAVAILABLE);
+            throw ex;
+            //return new ResponseModel("An error occurs: " + ex.getMessage() + "\n" + ex.getCause(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
@@ -144,18 +161,18 @@ public class BookService {
         book.setPublisher(publisher.getId() != null ? publisher : null);
 
         book.setDescription(bookDTO.getDescription() != null ? bookDTO.getDescription() : null);
-        book.setAvailableAmount(bookDTO.getAvailableAmount() == 0 ? bookDTO.getAvailableAmount() : 1);
+        book.setAvailableAmount(bookDTO.getAvailableAmount() != 0 ? bookDTO.getAvailableAmount() : 1);
 
         try {
-            Book foundBook = dbset.findByTitle(book.getTitle());
-            if(foundBook == null) {
+            Optional<Book> foundBook = dbset.findByTitle(book.getTitle());
+            if(foundBook.isEmpty()) {
                 return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
             }
-            book.setTitle(book.getTitle() != null ? book.getTitle() : foundBook.getTitle());
-            book.setAuthor(book.getAuthor() != null ? book.getAuthor() : foundBook.getAuthor());
-            book.setPublisher(book.getPublisher() != null ? book.getPublisher() : foundBook.getPublisher());
-            book.setAvailableAmount(book.getAvailableAmount() == 0 ? book.getAvailableAmount() : foundBook.getAvailableAmount());
-            book.setDescription(book.getDescription() != null ? book.getDescription() : foundBook.getDescription());
+            book.setTitle(book.getTitle() != null ? book.getTitle() : foundBook.get().getTitle());
+            book.setAuthor(book.getAuthor() != null ? book.getAuthor() : foundBook.get().getAuthor());
+            book.setPublisher(book.getPublisher() != null ? book.getPublisher() : foundBook.get().getPublisher());
+            book.setAvailableAmount(book.getAvailableAmount() != 0 ? book.getAvailableAmount() : foundBook.get().getAvailableAmount());
+            book.setDescription(book.getDescription() != null ? book.getDescription() : foundBook.get().getDescription());
 
             return new ResponseModel(dbset.save(book), HttpStatus.OK);
         }
@@ -166,22 +183,23 @@ public class BookService {
     }
 
     public ResponseModel getBookByTitle(String title) {
-        Book book = dbset.findByTitle(title);
-        if(book == null || book.getTitle().isEmpty()) {
+        Optional<Book> book = dbset.findByTitle(title);
+        if(book.isEmpty() || book.get().getTitle().isEmpty()) {
             return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
         }
 
         JoinBookResponseModel data = new JoinBookResponseModel();
 
-        data.setId(Optional.of(book.getId()));
-        data.setTitle(book.getTitle());
-        data.setAuthorName(book.getAuthor().getName());
+        data.setId(Optional.of(book.get().getId()));
+        data.setTitle(book.get().getTitle());
+        data.setAuthorName(book.get().getAuthor().getName());
         data.setPublisher( new PublisherResponse(
-                book.getPublisher().getName(),
-                book.getPublisher().getCnpj()
+                book.get().getPublisher().getName(),
+                book.get().getPublisher().getCnpj()
         ));
-        data.setDescription(book.getDescription());
-        data.setAvailableAmount(book.getAvailableAmount());
+        data.setDescription(book.get().getDescription());
+        data.setAvailableAmount(book.get().getAvailableAmount());
+        data.setBookUnits(Optional.of(book.get().getUnits()));
 
         return new ResponseModel(data, HttpStatus.OK);
     }
@@ -194,5 +212,11 @@ public class BookService {
         }
         dbset.delete(book.get());
         return new ResponseModel("Book has deleted.", HttpStatus.OK);
+    }
+
+    ///WARNING: FOR DEBUG
+    public ResponseModel listAllIBSNS() {
+       var data = unitRepo.findAll();
+       return new ResponseModel(data, HttpStatus.FOUND);
     }
 }

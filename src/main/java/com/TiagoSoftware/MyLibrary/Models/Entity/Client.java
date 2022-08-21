@@ -29,14 +29,10 @@ public class Client {
     public float loan;
 
     @OneToMany
-    @Column(nullable = true)
-    public List<Book> books;
+    public List<BookUnit> books;
 
     @OneToMany
-    @Column(nullable = true)
     public List<Borrowing> borrowings;
-
-    @Column()
     public Boolean isInactive;
 }
 

@@ -27,7 +27,7 @@ public class Borrowing {
     public LocalDate deadLine;
 
     @OneToOne
-    public Book book;
+    public BookUnit book;
 
     @ManyToOne
     public Client client;

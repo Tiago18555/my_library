@@ -1,12 +1,14 @@
 package com.TiagoSoftware.MyLibrary.Models.DTO;
 
 import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
+import com.TiagoSoftware.MyLibrary.Models.Entity.BookUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +25,6 @@ public class ClientUpdateDTO {
 
     public float loan;
 
-    public List<Book> books;
+    public List<BookUnit> books;
 
 }
