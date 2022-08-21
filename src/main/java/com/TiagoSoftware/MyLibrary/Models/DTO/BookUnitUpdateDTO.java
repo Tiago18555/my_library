@@ -8,13 +8,16 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Data
 public class BookUnitUpdateDTO {
 
-    @Column(nullable = false)
-    public UUID ibsn;
+    @NotNull
+    public long ibsn;
+
+    public String title;
 }
 

@@ -30,7 +30,5 @@ public class BookUpdateDTO{
     public UUID publisher;
 
     public String description;
-
-    public int availableAmount;
 }
 

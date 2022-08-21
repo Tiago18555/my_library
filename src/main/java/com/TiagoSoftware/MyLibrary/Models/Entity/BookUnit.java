@@ -15,7 +15,7 @@ import java.util.UUID;
 public class BookUnit {
     @Id
     @GeneratedValue
-    public UUID ibsn;
+    public Long ibsn;
 
     @ManyToOne
     public Book book;

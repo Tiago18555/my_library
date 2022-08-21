@@ -1,9 +1,8 @@
 package com.TiagoSoftware.MyLibrary.Controllers;
 
-import com.TiagoSoftware.MyLibrary.Models.DTO.AuthorDTO;
-import com.TiagoSoftware.MyLibrary.Models.DTO.BookDTO;
-import com.TiagoSoftware.MyLibrary.Models.DTO.BookUpdateDTO;
+import com.TiagoSoftware.MyLibrary.Models.DTO.*;
 import com.TiagoSoftware.MyLibrary.Services.BookService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +55,30 @@ public class BookController {
     @ApiOperation(value = "Exclui um livro da base de dados")
     public ResponseEntity deleteBook(@PathVariable UUID id) {
         var response = bookService.deleteBookById(id);
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @PatchMapping("/unit/add")
+    @ApiOperation(value = "Acresenta novas unidades de um livro existente")
+    public ResponseEntity includeNewBookUnits(@RequestBody @Valid BookChangeAmountDTO bookDTO) {
+        var response = bookService.addNewUnits(bookDTO);
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @DeleteMapping("/unit")
+    @ApiOperation(value = "Exclui uma unidade de livro existente")
+    public ResponseEntity deleteBookUnit(@RequestBody @Valid BookUnitUpdateDTO bookDTO) {
+        var response = bookService.deleteUnit(bookDTO);
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @GetMapping("/ibsn/{id}")
+    @ApiOperation(value = "Lista as unidades de um livro")
+    public ResponseEntity listIbsnsFromBook(@PathVariable UUID id) {
+        var response = bookService.listAllIbsnsById(id);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
