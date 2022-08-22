@@ -1,6 +1,7 @@
 package com.TiagoSoftware.MyLibrary.Controllers;
 
 import com.TiagoSoftware.MyLibrary.Models.DTO.BookDTO;
+import com.TiagoSoftware.MyLibrary.Models.DTO.BookUnitUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.BookUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.ConfigurationDTO;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
@@ -29,8 +30,8 @@ public class BorrowingController {
 
     @PostMapping("{id}")
     @ApiOperation(value="Realiza o empréstimo")
-    public ResponseEntity DoBorrow(@PathVariable UUID id, @RequestBody BookUpdateDTO book) {
-        var response = borrowingService.DoBorrow(id, book, 10);
+    public ResponseEntity DoBorrow(@PathVariable UUID id, @RequestBody BookUnitUpdateDTO book) {
+        var response = borrowingService.DoBorrow(id, book);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }

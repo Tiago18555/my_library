@@ -9,6 +9,7 @@ import com.TiagoSoftware.MyLibrary.Models.Responses.DataContainer;
 import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.JoinBookResponseModel;
 import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.PublisherResponse;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
+import com.TiagoSoftware.MyLibrary.Models.Responses.Unit.UnitResponse;
 import com.TiagoSoftware.MyLibrary.Repositories.BookRepository;
 import com.TiagoSoftware.MyLibrary.Repositories.BookUnitRepository;
 import org.springframework.beans.BeanUtils;
@@ -74,7 +75,8 @@ public class BookService {
                 System.out.println(unit.getIbsn());
                 unitRepo.save(unit);
             }
-            var secondary = unitRepo.findAllByBookId(book.getId());
+            var response = unitRepo.findAllByBookId(book.getId());
+            var secondary = this.mappingUnits(response);
             var data = new DataContainer(primary, secondary);
             return new ResponseModel(data, HttpStatus.CREATED);
         }
@@ -283,13 +285,28 @@ public class BookService {
     }
 
     public ResponseModel listAllIbsnsById(UUID id) {
-        var data = unitRepo.findAllByBookId(id);
+        var response = unitRepo.findAllByBookId(id);
+        var data = this.mappingUnits(response);
         return new ResponseModel(data, HttpStatus.OK);
     }
 
     ///WARNING: FOR DEBUG
     public ResponseModel listAllIBSNS() {
-       var data = unitRepo.findAll();
-       return new ResponseModel(data, HttpStatus.FOUND);
+        var response = unitRepo.findAll();
+        var data = this.mappingUnits(response);
+        return new ResponseModel(data, HttpStatus.FOUND);
+    }
+
+    /**
+     * @apiNote Mapeia uma coleção de BookUnit para uma coleção de UnitResponse
+     * */
+    private List<UnitResponse> mappingUnits(List<BookUnit> source) {
+        List<UnitResponse> target = new ArrayList<>();
+        for (BookUnit item : source) {
+            var unit = new UnitResponse();
+            BeanUtils.copyProperties(item, unit);
+            target.add(unit);
+        }
+        return target;
     }
 }

@@ -15,7 +15,7 @@ import java.util.UUID;
 public class BorrowingDTO {
 
     @NotNull
-    public UUID book;
+    public Long unit;
 
     @NotNull
     public UUID client;

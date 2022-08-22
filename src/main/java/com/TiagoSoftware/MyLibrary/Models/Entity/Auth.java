@@ -1,5 +1,6 @@
 package com.TiagoSoftware.MyLibrary.Models.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +25,7 @@ public class Auth implements UserDetails, Serializable {
     private String username;
 
     @Column(nullable = false, unique = false, length = 80)
+    @JsonIgnore
     private String password;
 
     @Override

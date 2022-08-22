@@ -39,6 +39,9 @@ public class ConfigurationService {
         }
     }
 
+    /**
+     * @return a configuração mais recente salva
+     * */
     public ResponseModel LoadNewConfiguration() {
         try {
             var foundConfig = dbset.findAll();
