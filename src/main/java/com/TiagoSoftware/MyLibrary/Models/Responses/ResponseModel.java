@@ -1,5 +1,6 @@
 package com.TiagoSoftware.MyLibrary.Models.Responses;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,5 +23,7 @@ public class ResponseModel {
 
     private HttpStatus httpstatus;
     private Object data;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Optional<String> token;
 }

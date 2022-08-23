@@ -219,16 +219,17 @@ public class BookService {
     @Transactional
     public ResponseModel deleteUnit(BookUnitUpdateDTO bookUnitDTO) {
         try {
-            var bookUnit = new BookUnit();
-            BeanUtils.copyProperties(bookUnitDTO, bookUnit);
-            var unit = unitRepo.findById(bookUnit.getIbsn());
-            System.out.println(bookUnit.getIbsn());
+            var unit = unitRepo.findByIbsn(bookUnitDTO.getIbsn());
+            System.out.println(bookUnitDTO.getIbsn());
             if(unit.isEmpty()) {
                 return new ResponseModel("Unit not found", HttpStatus.NOT_FOUND);
             }
-            unitRepo.delete(bookUnit);
+            unitRepo.delete(unit.get());
 
-            var book = dbset.findByTitle(bookUnit.getBook().getTitle());
+            System.out.println("AQUI VEM O TITULO");
+            System.out.println(bookUnitDTO.getTitle());
+
+            var book = dbset.findByTitle(bookUnitDTO.getTitle());
             if(book.isEmpty()) {
                 return new ResponseModel("Book not found", HttpStatus.NOT_FOUND);
             }

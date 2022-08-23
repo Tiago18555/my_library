@@ -23,6 +23,8 @@ public class DataContainer {
         this.second = second;
         this.third = third;
     }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object first;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
