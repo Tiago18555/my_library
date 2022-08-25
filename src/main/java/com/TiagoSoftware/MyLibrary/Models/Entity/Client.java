@@ -29,7 +29,7 @@ public class Client {
     public float loan;
 
     @OneToMany
-    public List<BookUnit> books;
+    public List<Unit> books;
 
     @OneToMany
     public List<Borrowing> borrowings;

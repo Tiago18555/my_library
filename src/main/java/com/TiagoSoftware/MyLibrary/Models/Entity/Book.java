@@ -33,6 +33,6 @@ public class Book {
     public int availableAmount;
 
     @OneToMany
-    public List<BookUnit> units;
+    public List<Unit> units;
 }
 

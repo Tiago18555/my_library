@@ -5,14 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 @Table(name = "book_unit")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookUnit {
+public class Unit {
     @Id
     @GeneratedValue
     public Long ibsn;

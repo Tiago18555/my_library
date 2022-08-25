@@ -11,11 +11,11 @@ import java.util.Optional;
 @Data
 public class ResponseModel {
 
-    public ResponseModel(Object data, HttpStatus httpstatus){
+    public ResponseModel(Object data, HttpStatus httpstatus) {
         this.data = data;
         this.httpstatus = httpstatus;
     }
-    public ResponseModel(Object data, HttpStatus httpstatus, Optional<String> token){
+    public ResponseModel(Object data, HttpStatus httpstatus, Optional<String> token) {
         this.data = data;
         this.httpstatus = httpstatus;
         this.token = token;

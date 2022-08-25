@@ -1,11 +1,8 @@
 package com.TiagoSoftware.MyLibrary.Models.Entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
@@ -27,7 +24,7 @@ public class Borrowing {
     public LocalDate deadLine;
 
     @OneToOne
-    public BookUnit book;
+    public Unit unit;
 
     @ManyToOne
     public Client client;

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -40,6 +41,14 @@ public class BorrowingController {
     @ApiOperation(value="Verifica se o o limite de empréstimos atingiu o limite ou se possui multa pendente")
     public ResponseEntity VerifyLoanStatus(@PathVariable UUID id) {
         var response = borrowingService.UpdateLoanData(id);
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
+    @PatchMapping("{id}")
+    @ApiOperation(value = "Realiza a devolução")
+    public ResponseEntity DoDevolution(@PathVariable UUID id, @RequestBody BookUnitUpdateDTO book, @RequestParam Optional<Boolean> cleanLoan) {
+        var response = borrowingService.DoDevolution(id, book, cleanLoan);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }

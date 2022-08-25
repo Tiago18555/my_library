@@ -3,7 +3,7 @@ package com.TiagoSoftware.MyLibrary.Services;
 import com.TiagoSoftware.MyLibrary.Models.DTO.*;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Author;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
-import com.TiagoSoftware.MyLibrary.Models.Entity.BookUnit;
+import com.TiagoSoftware.MyLibrary.Models.Entity.Unit;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Publisher;
 import com.TiagoSoftware.MyLibrary.Models.Responses.DataContainer;
 import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.JoinBookResponseModel;
@@ -66,11 +66,11 @@ public class BookService {
                 return new ResponseModel("This books is already exists. Did you meant to change his quantity?", HttpStatus.FORBIDDEN);
             }
             var primary = dbset.save(book);
-            List<BookUnit> data2 = null;
+            List<Unit> data2 = null;
 
             for(int i = 0; i < book.getAvailableAmount(); i++) {
                 var unitDTO = new BookUnitDTO(book, null);
-                var unit = new BookUnit();
+                var unit = new Unit();
                 BeanUtils.copyProperties(unitDTO, unit);
                 System.out.println(unit.getIbsn());
                 unitRepo.save(unit);
@@ -198,11 +198,11 @@ public class BookService {
             dbset.save(book);
 
             var primary = dbset.save(book);
-            List<BookUnit> data2 = null;
+            List<Unit> data2 = null;
 
             for(int i = 0; i < newAmount; i++) {
                 var unitDTO = new BookUnitDTO(book, null);
-                var unit = new BookUnit();
+                var unit = new Unit();
                 BeanUtils.copyProperties(unitDTO, unit);
                 System.out.println(unit.getIbsn());
                 unitRepo.save(unit);
@@ -285,25 +285,41 @@ public class BookService {
         }
     }
 
-    public ResponseModel listAllIbsnsById(UUID id) {
+    public ResponseModel listAllIbsnsById(UUID id, Optional<Boolean> hideUnavailable) {
         var response = unitRepo.findAllByBookId(id);
+        if( hideUnavailable.isPresent() && hideUnavailable.get().equals(true) ) {
+            var data = this
+                    .mappingUnits(response)
+                    .stream()
+                    .filter(x -> x.getClient() == null)
+                    .collect(Collectors.toList());
+            return new ResponseModel(data, HttpStatus.OK);
+        }
         var data = this.mappingUnits(response);
         return new ResponseModel(data, HttpStatus.OK);
     }
 
     ///WARNING: FOR DEBUG
-    public ResponseModel listAllIBSNS() {
+    public ResponseModel listAllIBSNS(Optional<Boolean> hideUnavailable) {
         var response = unitRepo.findAll();
+        if( hideUnavailable.isPresent() && hideUnavailable.get().equals(true) ) {
+            var data = this
+                    .mappingUnits(response)
+                    .stream()
+                    .filter(x -> x.getClient() == null)
+                    .collect(Collectors.toList());
+            return new ResponseModel(data, HttpStatus.I_AM_A_TEAPOT);
+        }
         var data = this.mappingUnits(response);
-        return new ResponseModel(data, HttpStatus.FOUND);
+        return new ResponseModel(data, HttpStatus.I_AM_A_TEAPOT);
     }
 
     /**
      * @apiNote Mapeia uma coleção de BookUnit para uma coleção de UnitResponse
-     * */
-    private List<UnitResponse> mappingUnits(List<BookUnit> source) {
+     **/
+    private List<UnitResponse> mappingUnits(List<Unit> source) {
         List<UnitResponse> target = new ArrayList<>();
-        for (BookUnit item : source) {
+        for (Unit item : source) {
             var unit = new UnitResponse();
             BeanUtils.copyProperties(item, unit);
             target.add(unit);

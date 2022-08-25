@@ -1,6 +1,5 @@
 package com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook;
-import com.TiagoSoftware.MyLibrary.Models.Entity.BookUnit;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Client;
+import com.TiagoSoftware.MyLibrary.Models.Entity.Unit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +19,5 @@ public class JoinBookResponseModel {
     private PublisherResponse publisher;
     private String description;
     private int availableAmount;
-    private Optional<List<BookUnit>> bookUnits;
+    private Optional<List<Unit>> bookUnits;
 }

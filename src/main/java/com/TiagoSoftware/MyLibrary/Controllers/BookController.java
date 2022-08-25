@@ -77,16 +77,16 @@ public class BookController {
 
     @GetMapping("/ibsn/{id}")
     @ApiOperation(value = "Lista as unidades de um livro")
-    public ResponseEntity listIbsnsFromBook(@PathVariable UUID id) {
-        var response = bookService.listAllIbsnsById(id);
+    public ResponseEntity listIbsnsFromBook(@PathVariable UUID id, @RequestParam Optional<Boolean> hideUnavailable) {
+        var response = bookService.listAllIbsnsById(id, hideUnavailable);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
 
     @GetMapping("/ibsn")
     @ApiOperation(value = "FOR DEBUG: LIST ALL IBSN'S")
-    public ResponseEntity listAllIbsns() {
-        var response = bookService.listAllIBSNS();
+    public ResponseEntity listAllIbsns(@RequestParam Optional<Boolean> hideUnavailable) {
+        var response = bookService.listAllIBSNS(hideUnavailable);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
