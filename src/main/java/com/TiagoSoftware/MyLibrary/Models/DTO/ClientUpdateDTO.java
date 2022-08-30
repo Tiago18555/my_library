@@ -12,13 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 public class ClientUpdateDTO {
 
-    @Size(min = 14)
-    @Size(max = 16)
+    @Size(min = 14, max = 16)
     @NotBlank
     public String cpf;
 
-    @Size(min = 3)
-    @Size(max = 40)
+    @Size(min = 3, max = 40)
     public String name;
 
     public float loan;

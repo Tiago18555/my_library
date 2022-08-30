@@ -12,5 +12,6 @@ public class AuthorUpdateDTO {
     @Size(max = 40)
     public String name;
 
+    @Size(max = 40)
     public UUID id;
 }
