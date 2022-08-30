@@ -17,9 +17,9 @@ public class Borrowing {
     public UUID id;
 
     @Column(nullable = false)
-    public Date startsAt;
+    public LocalDate startsAt;
 
-    public Date endsAt;
+    public LocalDate endsAt;
 
     public LocalDate deadLine;
 

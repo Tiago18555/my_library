@@ -26,7 +26,7 @@ public class Client {
     public Boolean isProfessor;
 
     @Column(nullable = true)
-    public float loan;
+    public double loan;
 
     @OneToMany
     public List<Unit> books;

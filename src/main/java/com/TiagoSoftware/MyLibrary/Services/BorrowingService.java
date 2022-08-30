@@ -1,10 +1,7 @@
 package com.TiagoSoftware.MyLibrary.Services;
 
 import com.TiagoSoftware.MyLibrary.Models.DTO.BookUnitUpdateDTO;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Unit;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Borrowing;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Client;
+import com.TiagoSoftware.MyLibrary.Models.Entity.*;
 import com.TiagoSoftware.MyLibrary.Models.Responses.DataContainer;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.*;
@@ -14,11 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.Period;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,8 +45,30 @@ public class BorrowingService {
     @Transactional
     public ResponseModel UpdateLoanData(UUID id) {
         try{
-            ///TODO: ATUALIZAR DADOS DE MULTA EM CLIENT MODEL
-            var data = dbset.findAllByClientId(id);
+            var borrowings = dbset.findAllByClientId(id);
+            double loan = 0d;
+            //List<Configuration> configurations = new ArrayList<>();
+            var client = clientRepository.findById(id);
+            if(client.isEmpty()) {
+                return new ResponseModel("Student not found", HttpStatus.NOT_FOUND);
+            }
+            for(Borrowing item : borrowings) {
+                var configuration = configurationRepository.findById(item.getConfiguration().getId());
+                if(configuration.isEmpty()) {
+                    return new ResponseModel("There's no configuration with this id", HttpStatus.NOT_FOUND);
+                }
+                var assessment = configuration.get().getAssessment();
+                var tolerance = configuration.get().getTolerance();
+
+                //Periodo de tempo em dias da data do empréstimo para a data atual, menos tempo de tolerância
+                var borrowTime = Period.between(item.getStartsAt(), LocalDate.now()).getDays() - tolerance;
+
+                if(borrowTime >= 1) {
+                    loan += assessment * borrowTime;
+                }
+            }
+            client.get().setLoan(loan);
+            var data = clientRepository.save(client.get());
 
             return new ResponseModel(
                     data,
@@ -124,7 +142,7 @@ public class BorrowingService {
         System.out.println("Creating new borrowing register...");
 
         var borrowing = new Borrowing();
-        borrowing.setStartsAt(new Date(System.currentTimeMillis()));
+        borrowing.setStartsAt(LocalDate.now());
         borrowing.setDeadLine(LocalDate.now().plusDays(lastConfig.get(0).getTolerance()));
         borrowing.setUnit(foundUnit.get());
         borrowing.setClient(foundClient.get());
@@ -204,7 +222,7 @@ public class BorrowingService {
 
 
         System.out.println(borrowing.get().getId());
-        borrowing.get().setEndsAt(new Date(System.currentTimeMillis()));
+        borrowing.get().setEndsAt(LocalDate.now());
 
         System.out.println("Increase one book on availableAmount...\nCleaning client register on this unit...\nRemoving bookUnit from Client");
 
