@@ -1,5 +1,6 @@
 package com.TiagoSoftware.MyLibrary.Models.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class Borrowing {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     public UUID id;
 
     @Column(nullable = false)

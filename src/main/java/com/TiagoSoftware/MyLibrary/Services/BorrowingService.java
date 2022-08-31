@@ -81,6 +81,49 @@ public class BorrowingService {
     }
 
     @Transactional
+    public ResponseModel ListAllBorrowings(Optional<String> filter) {
+        if(filter.isEmpty()) {
+            var data = dbset.findAll();
+            return new ResponseModel(data, HttpStatus.OK);
+        }
+
+        if(filter.get().equals("student")) {
+            var data = dbset
+                    .findAll()
+                    .stream()
+                    .filter(x -> !x.getClient().getIsProfessor())
+                    .collect(Collectors.toList());
+            return new ResponseModel(data, HttpStatus.OK);
+        }
+        if(filter.get().equals("professor")) {
+            var data = dbset
+                    .findAll()
+                    .stream()
+                    .filter(x -> x.getClient().getIsProfessor())
+                    .collect(Collectors.toList());
+            return new ResponseModel(data, HttpStatus.OK);
+        }
+        if(filter.get().equals("unfinished")) {
+            var data = dbset
+                    .findAll()
+                    .stream()
+                    .filter(x -> x.getEndsAt() == null)
+                    .collect(Collectors.toList());
+            return new ResponseModel(data, HttpStatus.OK);
+        }
+        if(filter.get().equals("finished")) {
+            var data = dbset
+                    .findAll()
+                    .stream()
+                    .filter(x -> x.getEndsAt() != null)
+                    .collect(Collectors.toList());
+            return new ResponseModel(data, HttpStatus.OK);
+        }
+
+        return new ResponseModel("String query not found", HttpStatus.BAD_REQUEST);
+    }
+
+    @Transactional
     public ResponseModel DoBorrow(UUID id, BookUnitUpdateDTO bookDTO) {
 
         System.out.println("Starting New Borrow...");
@@ -113,19 +156,6 @@ public class BorrowingService {
 
         var foundBorrowing = dbset.findOpenBorrowingsByIbsn(unit.getIbsn());
 
-        /*
-        if( !foundBorrowing.isEmpty() ) {
-            foundBorrowing
-                    .stream()
-                    .filter(x -> x.getEndsAt() == null)
-                    .collect(Collectors.toList());
-
-            if( (long)foundBorrowing.size() >= 1) {
-                return new ResponseModel("Error: There's a borrowing operation with this book(unit)", HttpStatus.NOT_FOUND);
-            }
-        }
-        */
-
         if(foundBorrowing.isPresent()) {
             return new ResponseModel("Error: There's a borrowing operation with this book(unit)", HttpStatus.NOT_FOUND);
         }
@@ -133,9 +163,13 @@ public class BorrowingService {
         System.out.println("Retrieve current configuration...");
 
         var foundConfig = configurationRepository.findAll();
-        var lastConfig = foundConfig.stream().skip(foundConfig.stream().count() - 1).limit(1).collect(Collectors.toList());
+        var lastConfig = foundConfig
+                .stream()
+                .skip(foundConfig.stream().count() - 1)
+                .limit(1)
+                .findFirst();
 
-        if (lastConfig.isEmpty() || lastConfig.get(0) == null) {
+        if (lastConfig.isEmpty()) {
             return new ResponseModel("There's no configuration on database, please create one first", HttpStatus.FORBIDDEN);
         }
 
@@ -143,9 +177,10 @@ public class BorrowingService {
 
         var borrowing = new Borrowing();
         borrowing.setStartsAt(LocalDate.now());
-        borrowing.setDeadLine(LocalDate.now().plusDays(lastConfig.get(0).getTolerance()));
+        borrowing.setDeadLine(LocalDate.now().plusDays(lastConfig.get().getTolerance()));
         borrowing.setUnit(foundUnit.get());
         borrowing.setClient(foundClient.get());
+        borrowing.setConfiguration(lastConfig.get());
 
         System.out.println("Decrease one book on availableAmount, Adding client + book to each other");
 

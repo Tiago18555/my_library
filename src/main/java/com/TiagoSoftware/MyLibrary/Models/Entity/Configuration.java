@@ -1,5 +1,6 @@
 package com.TiagoSoftware.MyLibrary.Models.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class Configuration {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     public UUID id;
 
     public Date startedAt;

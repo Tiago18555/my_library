@@ -52,5 +52,13 @@ public class BorrowingController {
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
+
+    @GetMapping
+    @ApiOperation(value = "Lista todos os empréstimos")
+    public ResponseEntity ListAllBorrowings(@RequestParam Optional<String> filter) {
+        var response = borrowingService.ListAllBorrowings(filter);
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
 }
 

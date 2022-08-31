@@ -17,3 +17,8 @@ public interface BorrowingRepository extends JpaRepository<Borrowing, UUID> {
     @Query( value = "SELECT b FROM Borrowing b JOIN b.unit u WHERE u.ibsn = :ibsn AND b.endsAt IS NULL" )
     Optional<Borrowing> findOpenBorrowingsByIbsn(@Param("ibsn") Long ibsn);
 }
+
+/**
+ *     @Query( value = "select b from Book b inner join b.author a inner join b.publisher p" )
+ *     List<Book> findAllCompletly();
+ */
