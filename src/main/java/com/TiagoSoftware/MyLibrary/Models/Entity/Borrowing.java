@@ -15,7 +15,7 @@ public class Borrowing {
 
     @Id
     @GeneratedValue
-    @JsonIgnore
+    //@JsonIgnore
     public UUID id;
 
     @Column(nullable = false)

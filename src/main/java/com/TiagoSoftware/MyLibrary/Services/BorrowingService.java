@@ -5,6 +5,7 @@ import com.TiagoSoftware.MyLibrary.Models.Entity.*;
 import com.TiagoSoftware.MyLibrary.Models.Responses.DataContainer;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.*;
+import org.jetbrains.annotations.TestOnly;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,29 +46,44 @@ public class BorrowingService {
     @Transactional
     public ResponseModel UpdateLoanData(UUID id) {
         try{
-            var borrowings = dbset.findAllByClientId(id);
             double loan = 0d;
-            //List<Configuration> configurations = new ArrayList<>();
+            var borrowings = dbset.findAllByClientId(id)
+                    .stream()
+                    .filter(x -> x.getEndsAt() == null)
+                    .collect(Collectors.toList());
             var client = clientRepository.findById(id);
             if(client.isEmpty()) {
                 return new ResponseModel("Student not found", HttpStatus.NOT_FOUND);
             }
+            if(borrowings.isEmpty()) {
+                return new ResponseModel("There's none borrowing with this student", HttpStatus.NOT_FOUND);
+            }
             for(Borrowing item : borrowings) {
                 var configuration = configurationRepository.findById(item.getConfiguration().getId());
+                System.out.println("item.getConfiguration().getId(): " + item.getConfiguration().getId());
                 if(configuration.isEmpty()) {
                     return new ResponseModel("There's no configuration with this id", HttpStatus.NOT_FOUND);
                 }
                 var assessment = configuration.get().getAssessment();
                 var tolerance = configuration.get().getTolerance();
 
+                System.out.println("Assesment: " + assessment);
+                System.out.println("Tolerance: " + tolerance);
+
                 //Periodo de tempo em dias da data do empréstimo para a data atual, menos tempo de tolerância
                 var borrowTime = Period.between(item.getStartsAt(), LocalDate.now()).getDays() - tolerance;
 
+                System.out.println("Borrowtime: " + borrowTime);
+
                 if(borrowTime >= 1) {
                     loan += assessment * borrowTime;
+
+                    System.out.println("Loan: " + loan);
                 }
             }
             client.get().setLoan(loan);
+
+            System.out.println("client.getloan: " + client.get().getLoan());
             var data = clientRepository.save(client.get());
 
             return new ResponseModel(
@@ -124,7 +140,7 @@ public class BorrowingService {
     }
 
     @Transactional
-    public ResponseModel DoBorrow(UUID id, BookUnitUpdateDTO bookDTO) {
+    public ResponseModel DoBorrow(UUID id, BookUnitUpdateDTO bookDTO, Optional<Integer> debug) {
 
         System.out.println("Starting New Borrow...");
         System.out.println("Checking book, unit and client fields...");
@@ -176,7 +192,13 @@ public class BorrowingService {
         System.out.println("Creating new borrowing register...");
 
         var borrowing = new Borrowing();
-        borrowing.setStartsAt(LocalDate.now());
+
+        if(debug.isPresent() && debug.get() > 0) {
+            borrowing.setStartsAt(LocalDate.now().minusDays(debug.get()));
+        } else {
+            borrowing.setStartsAt(LocalDate.now());
+        }
+
         borrowing.setDeadLine(LocalDate.now().plusDays(lastConfig.get().getTolerance()));
         borrowing.setUnit(foundUnit.get());
         borrowing.setClient(foundClient.get());
@@ -189,11 +211,11 @@ public class BorrowingService {
 
         System.out.println("Finish borrow operation");
 
-        try{
-            var first = dbset.save(borrowing);
-            var second = bookRepository.save(book);
-            var third = bookUnitRepository.save(unit);
-            var data = new DataContainer(first, second, third);
+        try {
+            var Borrowing = dbset.save(borrowing);
+            var Book = bookRepository.save(book);
+            var Unit = bookUnitRepository.save(unit);
+            var data = new DataContainer(Borrowing, Book, Unit);
             return new ResponseModel(data, HttpStatus.CREATED);
         }
         catch (Exception ex) {
@@ -237,19 +259,6 @@ public class BorrowingService {
         System.out.println("Finalizing borrow register date");
 
         var borrowing = dbset.findOpenBorrowingsByIbsn(unit.getIbsn());
-        //var borrowing = dbset.findAllByUnitIbsn(unit.getIbsn());
-        /*
-        if(!borrowing.isEmpty()) {
-            borrowing
-                    .stream()
-                    .filter(x -> x.getEndsAt() == null)
-                    .collect(Collectors.toList());
-
-            if ( (long) borrowing.size() < 2 ) {
-                return new ResponseModel("Borrowing null", HttpStatus.NOT_FOUND);
-            }
-        }
-        */
 
         if (borrowing.isEmpty()) {
             return new ResponseModel("Borrowing null", HttpStatus.NOT_FOUND);

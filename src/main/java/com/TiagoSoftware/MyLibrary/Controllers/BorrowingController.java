@@ -30,15 +30,15 @@ public class BorrowingController {
     }
 
     @PostMapping("{id}")
-    @ApiOperation(value="Realiza o empréstimo")
-    public ResponseEntity DoBorrow(@PathVariable UUID id, @RequestBody BookUnitUpdateDTO book) {
-        var response = borrowingService.DoBorrow(id, book);
+    @ApiOperation(value = "Realiza o empréstimo")
+    public ResponseEntity DoBorrow(@PathVariable UUID id, @RequestBody BookUnitUpdateDTO book, @RequestParam Optional<Integer> debugDelay) {
+        var response = borrowingService.DoBorrow(id, book, debugDelay);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
 
     @GetMapping("{id}")
-    @ApiOperation(value="Verifica se o o limite de empréstimos atingiu o limite ou se possui multa pendente")
+    @ApiOperation(value = "Verifica se o o limite de empréstimos atingiu o limite ou se possui multa pendente")
     public ResponseEntity VerifyLoanStatus(@PathVariable UUID id) {
         var response = borrowingService.UpdateLoanData(id);
 
