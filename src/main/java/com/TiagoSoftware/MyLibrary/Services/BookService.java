@@ -249,6 +249,8 @@ public class BookService {
             return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
         }
 
+        /*
+
         JoinBookResponseModel data = new JoinBookResponseModel();
 
         data.setId(Optional.of(book.get().getId()));
@@ -261,6 +263,10 @@ public class BookService {
         data.setDescription(book.get().getDescription());
         data.setAvailableAmount(book.get().getAvailableAmount());
         data.setBookUnits(Optional.of(book.get().getUnits()));
+
+        */
+
+        var data = book.get();
 
         return new ResponseModel(data, HttpStatus.OK);
     }

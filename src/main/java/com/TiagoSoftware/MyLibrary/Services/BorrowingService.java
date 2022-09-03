@@ -135,6 +135,17 @@ public class BorrowingService {
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
+        if(filter.get().equals("nextweek")) {
+            var data = dbset
+                    .findAll()
+                    .stream()
+                    //FILTERING OPEN BORROWS
+                    .filter(x -> x.getEndsAt() != null)
+                    //FILTERING NEXT WEEK
+                    .filter(x -> Period.between(LocalDate.now(), x.getDeadLine()).getDays() <= 7)
+                    .collect(Collectors.toList());
+            return new ResponseModel(data, HttpStatus.OK);
+        }
 
         return new ResponseModel("String query not found", HttpStatus.BAD_REQUEST);
     }
