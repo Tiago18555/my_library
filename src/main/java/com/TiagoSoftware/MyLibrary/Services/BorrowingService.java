@@ -140,7 +140,7 @@ public class BorrowingService {
                     .findAll()
                     .stream()
                     //FILTERING OPEN BORROWS
-                    .filter(x -> x.getEndsAt() != null)
+                    .filter(x -> x.getEndsAt() == null)
                     //FILTERING NEXT WEEK
                     .filter(x -> Period.between(LocalDate.now(), x.getDeadLine()).getDays() <= 7)
                     .collect(Collectors.toList());
