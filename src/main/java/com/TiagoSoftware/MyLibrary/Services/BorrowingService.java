@@ -210,7 +210,7 @@ public class BorrowingService {
             borrowing.setStartsAt(LocalDate.now());
         }
 
-        borrowing.setDeadLine(LocalDate.now().plusDays(lastConfig.get().getTolerance()));
+        borrowing.setDeadLine(borrowing.getStartsAt().plusDays(lastConfig.get().getTolerance()));
         borrowing.setUnit(foundUnit.get());
         borrowing.setClient(foundClient.get());
         borrowing.setConfiguration(lastConfig.get());

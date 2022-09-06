@@ -18,7 +18,7 @@ public class Configuration {
 
     @Id
     @GeneratedValue
-    @JsonIgnore
+    //@JsonIgnore
     public UUID id;
 
     public Date startedAt;
