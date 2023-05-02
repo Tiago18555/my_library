@@ -45,6 +45,7 @@ public class BorrowingService {
 
     @Transactional
     public ResponseModel UpdateLoanData(UUID id) {
+        System.out.println("START HERE");
         try{
             double loan = 0d;
             var borrowings = dbset.findAllByClientId(id)
