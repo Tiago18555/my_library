@@ -163,7 +163,7 @@ public class BookService {
         book.setDescription(bookDTO.getDescription() != null ? bookDTO.getDescription() : null);
 
         try {
-            Optional<Book> foundBook = dbset.findByTitle(book.getTitle());
+            Optional<Book> foundBook = dbset.findById(book.getId());
             if(foundBook.isEmpty()) {
                 return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
             }
