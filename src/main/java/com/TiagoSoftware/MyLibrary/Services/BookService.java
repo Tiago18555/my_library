@@ -167,7 +167,9 @@ public class BookService {
             if(foundBook.isEmpty()) {
                 return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
             }
+
             book.setTitle(book.getTitle() != null ? book.getTitle() : foundBook.get().getTitle());
+            book.setAvailableAmount(foundBook.get().getAvailableAmount());
             book.setAuthor(book.getAuthor() != null ? book.getAuthor() : foundBook.get().getAuthor());
             book.setPublisher(book.getPublisher() != null ? book.getPublisher() : foundBook.get().getPublisher());
             book.setDescription(book.getDescription() != null ? book.getDescription() : foundBook.get().getDescription());
