@@ -15,7 +15,7 @@ public class ClientDTO {
     @Size(min = 3, max = 40)
     public String name;
 
-    @Size(min = 14, max = 16)
+    @Size(min = 11, max = 16)
     @NotBlank
     public String cpf;
 }
