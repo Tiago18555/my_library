@@ -78,6 +78,10 @@ public class ProfessorService {
                 return new ResponseModel("Professor not found.", HttpStatus.NOT_FOUND);
             }
 
+            if(foundProfessor.getIsProfessor().equals(false)){
+                return new ResponseModel("This cpf belongs to a student.", HttpStatus.BAD_REQUEST);
+            }
+
             professor.setCpf(clientUpdateDTO.getCpf());
             professor.setName(clientUpdateDTO.getName() != null ? clientUpdateDTO.getName() : foundProfessor.getName());
             professor.setLoan(clientUpdateDTO.getLoan() != 0 ? clientUpdateDTO.getLoan() : foundProfessor.getLoan());
@@ -98,6 +102,10 @@ public class ProfessorService {
         Client data = dbset.findByCpf(cpf);
         if(data == null || data.getCpf().isEmpty()) {
             return new ResponseModel("Professor not found.", HttpStatus.NOT_FOUND);
+        }
+
+        if(data.isProfessor.equals(false)) {
+            return new ResponseModel("This cpf belongs to a student.", HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseModel(data, HttpStatus.OK);
