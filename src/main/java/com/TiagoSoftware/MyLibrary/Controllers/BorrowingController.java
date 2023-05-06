@@ -45,6 +45,14 @@ public class BorrowingController {
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
 
+    @GetMapping("professor/{id}")
+    @ApiOperation(value = "Verifica se o limite de empréstimos simultâneos foi atingido")
+    public ResponseEntity UpdateBorrowLimitData(@PathVariable UUID id) {
+        var response = borrowingService.UpdateBorrowLimitData(id);
+
+        return new ResponseEntity<>(response, response.getHttpstatus());
+    }
+
     @PatchMapping("{id}")
     @ApiOperation(value = "Realiza a devolução")
     public ResponseEntity DoDevolution(@PathVariable UUID id, @RequestBody BookUnitUpdateDTO book, @RequestParam Optional<Boolean> cleanLoan) {

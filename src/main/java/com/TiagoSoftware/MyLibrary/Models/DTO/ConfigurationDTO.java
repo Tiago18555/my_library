@@ -18,4 +18,8 @@ public class ConfigurationDTO {
 
     @Max(100)
     public Double assessment;
+
+    @Min(1)
+    @Max(50)
+    public Integer borrowingLimit;
 }

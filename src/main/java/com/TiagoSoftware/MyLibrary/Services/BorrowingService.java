@@ -44,6 +44,44 @@ public class BorrowingService {
     }
 
     @Transactional
+    public ResponseModel UpdateBorrowLimitData(UUID id) {
+        System.out.println("START HERE");
+        try{
+            var borrowings = dbset.findAllByClientId(id)
+                    .stream()
+                    .filter(x -> x.getEndsAt() == null)
+                    .collect(Collectors.toList());
+
+            System.out.println("Retrieve current configuration...");
+
+            var foundConfig = configurationRepository.findAll();
+            var lastConfig = foundConfig
+                    .stream()
+                    .skip(foundConfig.stream().count() - 1)
+                    .limit(1)
+                    .findFirst();
+
+            if (lastConfig.isEmpty()) {
+                return new ResponseModel("There's no configuration on database, please create one first", HttpStatus.FORBIDDEN);
+            }
+
+            if(borrowings.size() >= lastConfig.get().getBorrowingLimit()) {
+                return new ResponseModel(new DataContainer(
+                        "The limit of simultaneous borrowings has reached",
+                        borrowings
+                ), HttpStatus.OK);
+            }
+
+            return new ResponseModel(new DataContainer(
+                    "The limit of simultaneous borrowings is " + lastConfig.get().getBorrowingLimit().toString(),
+                    borrowings
+            ), HttpStatus.OK);
+
+        }catch(Exception ex) {
+            throw ex;
+        }
+    }
+    @Transactional
     public ResponseModel UpdateLoanData(UUID id) {
         System.out.println("START HERE");
         try{
@@ -55,6 +93,9 @@ public class BorrowingService {
             var client = clientRepository.findById(id);
             if(client.isEmpty()) {
                 return new ResponseModel("Student not found", HttpStatus.NOT_FOUND);
+            }
+            if(client.get().isProfessor.equals(true)){
+                return new ResponseModel("This id belongs to a professor.", HttpStatus.BAD_REQUEST);
             }
             if(borrowings.isEmpty()) {
                 return new ResponseModel("There's none borrowing with this student", HttpStatus.NOT_FOUND);
