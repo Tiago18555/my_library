@@ -2,12 +2,7 @@ package com.TiagoSoftware.MyLibrary.Services;
 
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientUpdateDTO;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Author;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Client;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Publisher;
-import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.JoinBookResponseModel;
-import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.PublisherResponse;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.ClientRepository;
 import org.springframework.beans.BeanUtils;
@@ -22,17 +17,17 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class StudentService {
+public class ProfessorService {
 
     @Autowired
     private final ClientRepository dbset;
 
-    public StudentService(ClientRepository dbset) {
+    public ProfessorService(ClientRepository dbset) {
         this.dbset = dbset;
     }
 
     @Transactional
-    public ResponseModel registerNewStudent(ClientDTO clientDTO) {
+    public ResponseModel registerNewProfessor(ClientDTO clientDTO) {
         Client client = new Client();
         BeanUtils.copyProperties(clientDTO, client);
 
@@ -40,7 +35,7 @@ public class StudentService {
             if (dbset.findByCpf(client.getCpf()) != null) {
                 return new ResponseModel("This cpf has already registered", HttpStatus.FORBIDDEN);
             }
-            client.setIsProfessor(false);
+            client.setIsProfessor(true);
             client.setIsInactive(false);
             var data = dbset.save(client);
             return new ResponseModel(data, HttpStatus.CREATED);
@@ -51,14 +46,14 @@ public class StudentService {
         }
     }
 
-    public ResponseModel listStudents(Optional<Boolean> showInactive) {
+    public ResponseModel listProfessors(Optional<Boolean> showInactive) {
         List<Client> data;
 
         if(showInactive.isPresent() && showInactive.get()) {
             data = dbset
                     .findAll()
                     .stream()
-                    .filter(x -> !x.isProfessor)
+                    .filter(x -> x.isProfessor)
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
@@ -67,31 +62,31 @@ public class StudentService {
                 .findAll()
                 .stream()
                 .filter(x -> !x.isInactive)
-                .filter(x -> !x.isProfessor)
+                .filter(x -> x.isProfessor)
                 .collect(Collectors.toList());
 
         return new ResponseModel(data, HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseModel editStudent(ClientUpdateDTO clientUpdateDTO) {
-        var student = new Client();
+    public ResponseModel editProfessor(ClientUpdateDTO clientUpdateDTO) {
+        var professor = new Client();
 
         try {
-            Client foundStudent = dbset.findByCpf(clientUpdateDTO.getCpf());
-            if(foundStudent == null) {
-                return new ResponseModel("Student not found.", HttpStatus.NOT_FOUND);
+            Client foundProfessor = dbset.findByCpf(clientUpdateDTO.getCpf());
+            if(foundProfessor == null) {
+                return new ResponseModel("Professor not found.", HttpStatus.NOT_FOUND);
             }
 
-            student.setCpf(clientUpdateDTO.getCpf());
-            student.setName(clientUpdateDTO.getName() != null ? clientUpdateDTO.getName() : foundStudent.getName());
-            student.setLoan(clientUpdateDTO.getLoan() != 0 ? clientUpdateDTO.getLoan() : foundStudent.getLoan());
-            student.setBooks(clientUpdateDTO.getBooks() != null ? clientUpdateDTO.getBooks() : foundStudent.getBooks());
-            student.setIsInactive(false);
-            student.setIsProfessor(false);
-            student.setId(foundStudent.getId());
+            professor.setCpf(clientUpdateDTO.getCpf());
+            professor.setName(clientUpdateDTO.getName() != null ? clientUpdateDTO.getName() : foundProfessor.getName());
+            professor.setLoan(clientUpdateDTO.getLoan() != 0 ? clientUpdateDTO.getLoan() : foundProfessor.getLoan());
+            professor.setBooks(clientUpdateDTO.getBooks() != null ? clientUpdateDTO.getBooks() : foundProfessor.getBooks());
+            professor.setIsInactive(false);
+            professor.setIsProfessor(false);
+            professor.setId(foundProfessor.getId());
 
-            return new ResponseModel(dbset.save(student), HttpStatus.OK);
+            return new ResponseModel(dbset.save(professor), HttpStatus.OK);
         }
         catch (Exception ex) {
             //throw ex;
@@ -99,30 +94,30 @@ public class StudentService {
         }
     }
 
-    public ResponseModel getStudentByCpf(String cpf){
+    public ResponseModel getProfessorByCpf(String cpf){
         Client data = dbset.findByCpf(cpf);
         if(data == null || data.getCpf().isEmpty()) {
-            return new ResponseModel("Student not found.", HttpStatus.NOT_FOUND);
+            return new ResponseModel("Professor not found.", HttpStatus.NOT_FOUND);
         }
 
         return new ResponseModel(data, HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseModel deleteStudentById(UUID id, Optional<Boolean> restore) {
-        var student = dbset.findById(id);
-        if(student.isEmpty()) {
-            return new ResponseModel("Student not found.", HttpStatus.NOT_FOUND);
+    public ResponseModel deleteProfessorById(UUID id, Optional<Boolean> restore) {
+        var professor = dbset.findById(id);
+        if(professor.isEmpty()) {
+            return new ResponseModel("Professor not found.", HttpStatus.NOT_FOUND);
         }
 
-        if(student.get().isProfessor.equals(true)) {
-            return new ResponseModel("This id belongs to a professor.", HttpStatus.BAD_REQUEST);
+        if(professor.get().isProfessor.equals(false)) {
+            return new ResponseModel("This id belongs to a student.", HttpStatus.BAD_REQUEST);
         }
 
         //Student.isInactive == false  if there's a parameter of restore = true
-        student.get().setIsInactive(restore.isPresent() && restore.get().equals(true) ? false : true);
+        professor.get().setIsInactive(restore.isPresent() && restore.get().equals(true) ? false : true);
 
-        dbset.save(student.get());
-        return new ResponseModel(student.get().getIsInactive() == true ? "Student has deleted." : "Student has restored", HttpStatus.OK);
+        dbset.save(professor.get());
+        return new ResponseModel(professor.get().getIsInactive() == true ? "Professor has deleted." : "Professor has restored", HttpStatus.OK);
     }
 }
