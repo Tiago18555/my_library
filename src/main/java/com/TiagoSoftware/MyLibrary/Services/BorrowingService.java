@@ -5,14 +5,12 @@ import com.TiagoSoftware.MyLibrary.Models.Entity.*;
 import com.TiagoSoftware.MyLibrary.Models.Responses.DataContainer;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.*;
-import org.jetbrains.annotations.TestOnly;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -55,15 +53,16 @@ public class BorrowingService {
             System.out.println("Retrieve current configuration...");
 
             var foundConfig = configurationRepository.findAll();
+
+            if (foundConfig.isEmpty()) {
+                return new ResponseModel("There's no configuration on database, please create one first", HttpStatus.FORBIDDEN);
+            }
+
             var lastConfig = foundConfig
                     .stream()
                     .skip(foundConfig.stream().count() - 1)
                     .limit(1)
                     .findFirst();
-
-            if (lastConfig.isEmpty()) {
-                return new ResponseModel("There's no configuration on database, please create one first", HttpStatus.FORBIDDEN);
-            }
 
             if(borrowings.size() >= lastConfig.get().getBorrowingLimit()) {
                 return new ResponseModel(new DataContainer(
@@ -73,7 +72,7 @@ public class BorrowingService {
             }
 
             return new ResponseModel(new DataContainer(
-                    "The limit of simultaneous borrowings is " + lastConfig.get().getBorrowingLimit().toString(),
+                    "The limit of simultaneous borrowings is " + lastConfig.get().getBorrowingLimit(),
                     borrowings
             ), HttpStatus.OK);
 
@@ -109,13 +108,13 @@ public class BorrowingService {
                 var assessment = configuration.get().getAssessment();
                 var tolerance = configuration.get().getTolerance();
 
-                System.out.println("Assesment: " + assessment);
+                System.out.println("Assessment: " + assessment);
                 System.out.println("Tolerance: " + tolerance);
 
                 //Periodo de tempo em dias da data do empréstimo para a data atual, menos tempo de tolerância
                 var borrowTime = Period.between(item.getStartsAt(), LocalDate.now()).getDays() - tolerance;
 
-                System.out.println("Borrowtime: " + borrowTime);
+                System.out.println("Borrow time: " + borrowTime);
 
                 if(borrowTime >= 1) {
                     loan += assessment * borrowTime;
@@ -232,15 +231,16 @@ public class BorrowingService {
         System.out.println("Retrieve current configuration...");
 
         var foundConfig = configurationRepository.findAll();
+
+        if (foundConfig.isEmpty()) {
+            return new ResponseModel("There's no configuration on database, please create one first", HttpStatus.FORBIDDEN);
+        }
+
         var lastConfig = foundConfig
                 .stream()
                 .skip(foundConfig.stream().count() - 1)
                 .limit(1)
                 .findFirst();
-
-        if (lastConfig.isEmpty()) {
-            return new ResponseModel("There's no configuration on database, please create one first", HttpStatus.FORBIDDEN);
-        }
 
         System.out.println("Creating new borrowing register...");
 
@@ -330,7 +330,7 @@ public class BorrowingService {
         unit.setClient(null);
 
         if(clearLoan.isPresent() && clearLoan.get().equals(true)) {
-            //TODO: ADICIONAR PAGAMENTO PARCIAL DE MULTA DEPOIS
+            //TODO: ADICIONAR PAGAMENTO PARCIAL DE MULTA DEPOIS [OU NÃO]
             client.setLoan(0);
         }
 
