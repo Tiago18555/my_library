@@ -27,9 +27,6 @@ public class Book {
     @Column(length = 2048)
     public String description;
 
-    @OneToOne
-    public Borrowing borrowing;
-
     public int availableAmount;
 
     @OneToMany

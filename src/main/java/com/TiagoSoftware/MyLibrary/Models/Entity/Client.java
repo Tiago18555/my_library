@@ -29,10 +29,8 @@ public class Client {
     public double loan;
 
     @OneToMany
-    public List<Unit> books;
-
-    @OneToMany
     public List<Borrowing> borrowings;
+
     public Boolean isInactive;
 }
 

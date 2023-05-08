@@ -1,6 +1,7 @@
 package com.TiagoSoftware.MyLibrary.Models.Responses.Unit;
 
 import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
+import com.TiagoSoftware.MyLibrary.Models.Entity.Borrowing;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Client;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,5 +21,5 @@ public class UnitResponse {
     public Book book;
 
     @JsonIgnore
-    public Client client;
+    public Borrowing borrowing;
 }

@@ -85,7 +85,7 @@ public class ProfessorService {
             professor.setCpf(clientUpdateDTO.getCpf());
             professor.setName(clientUpdateDTO.getName() != null ? clientUpdateDTO.getName() : foundProfessor.getName());
             professor.setLoan(clientUpdateDTO.getLoan() != 0 ? clientUpdateDTO.getLoan() : foundProfessor.getLoan());
-            professor.setBooks(clientUpdateDTO.getBooks() != null ? clientUpdateDTO.getBooks() : foundProfessor.getBooks());
+            professor.setBorrowings(clientUpdateDTO.getBorrowings() != null ? clientUpdateDTO.getBorrowings() : foundProfessor.getBorrowings());
             professor.setIsInactive(false);
             professor.setIsProfessor(false);
             professor.setId(foundProfessor.getId());

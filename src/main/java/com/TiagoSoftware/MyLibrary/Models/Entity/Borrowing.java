@@ -2,6 +2,8 @@ package com.TiagoSoftware.MyLibrary.Models.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -29,9 +31,15 @@ public class Borrowing {
     public Unit unit;
 
     @ManyToOne
+    @JsonIgnore
     public Client client;
 
     @OneToOne
     public Configuration configuration;
 }
+/*
+*   @ManyToOne(fetch = FetchType.EAGER, optional = false)
+  @JoinColumn(name = "tutorial_id", nullable = false)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+* */
 

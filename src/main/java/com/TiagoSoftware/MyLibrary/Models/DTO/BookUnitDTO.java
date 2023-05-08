@@ -13,6 +13,4 @@ public class BookUnitDTO {
 
     @NotNull
     public Book book;
-
-    public Client client;
 }

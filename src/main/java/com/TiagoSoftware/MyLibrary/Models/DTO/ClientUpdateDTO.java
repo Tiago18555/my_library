@@ -1,6 +1,6 @@
 package com.TiagoSoftware.MyLibrary.Models.DTO;
 
-import com.TiagoSoftware.MyLibrary.Models.Entity.Unit;
+import com.TiagoSoftware.MyLibrary.Models.Entity.Borrowing;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -21,6 +21,6 @@ public class ClientUpdateDTO {
 
     public float loan;
 
-    public List<Unit> books;
+    public List<Borrowing> borrowings;
 
 }

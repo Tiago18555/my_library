@@ -127,6 +127,8 @@ public class BorrowingService {
             System.out.println("client.getloan: " + client.get().getLoan());
             var data = clientRepository.save(client.get());
 
+            //data.getBooks()
+
             return new ResponseModel(
                     data,
                     HttpStatus.OK
@@ -180,9 +182,7 @@ public class BorrowingService {
             var data = dbset
                     .findAll()
                     .stream()
-                    //FILTERING OPEN BORROWS
                     .filter(x -> x.getEndsAt() == null)
-                    //FILTERING NEXT WEEK
                     .filter(x -> Period.between(LocalDate.now(), x.getDeadLine()).getDays() <= 7)
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
@@ -200,7 +200,8 @@ public class BorrowingService {
         var foundUnit = bookUnitRepository.findById(bookDTO.getIbsn());
         var foundClient = clientRepository.findById(id);
 
-        if(foundUnit.isEmpty() || foundUnit.get().getClient() != null) {
+
+        if(foundUnit.isEmpty() || foundUnit.get().getBorrowing() != null) {
             return new ResponseModel("Unit not found or unavailable.", HttpStatus.NOT_FOUND);
         }
 
@@ -221,6 +222,9 @@ public class BorrowingService {
 
         var book = new Book();
         BeanUtils.copyProperties(foundBook.get(), book);
+
+        var client = new Client();
+        BeanUtils.copyProperties(foundClient.get(), client);
 
         var foundBorrowing = dbset.findOpenBorrowingsByIbsn(unit.getIbsn());
 
@@ -260,15 +264,22 @@ public class BorrowingService {
         System.out.println("Decrease one book on availableAmount, Adding client + book to each other");
 
         book.setAvailableAmount(book.getAvailableAmount() -1);
-        unit.setClient(foundClient.get());
 
         System.out.println("Finish borrow operation");
 
         try {
             var Borrowing = dbset.save(borrowing);
             var Book = bookRepository.save(book);
+
+            unit.setBorrowing(borrowing);
+
+            System.out.println(">>>>>>>>>> FOI AQUI MERMO");
+            client.borrowings.add(borrowing);
+
             var Unit = bookUnitRepository.save(unit);
-            var data = new DataContainer(Borrowing, Book, Unit);
+            var Client = clientRepository.save(client);
+
+            var data = new DataContainer(Borrowing, Book, Unit, Client);
             return new ResponseModel(data, HttpStatus.CREATED);
         }
         catch (Exception ex) {
@@ -284,9 +295,11 @@ public class BorrowingService {
         var foundUnit = bookUnitRepository.findById(bookDTO.getIbsn());
         var foundClient = clientRepository.findById(id);
 
-        if(foundUnit.isEmpty() || foundUnit.get().getClient() == null) {
+
+        if(foundUnit.isEmpty() || foundUnit.get().getBorrowing() == null) {
             return new ResponseModel("Unit not found or unavailable for devolution.", HttpStatus.NOT_FOUND);
         }
+
 
         if(foundClient.isEmpty()) {
             return new ResponseModel("User not found.", HttpStatus.NOT_FOUND);
@@ -317,24 +330,21 @@ public class BorrowingService {
             return new ResponseModel("Borrowing null", HttpStatus.NOT_FOUND);
         }
 
-
-        System.out.println(borrowing.get().getId());
+        System.out.println("Devolution at: " + LocalDate.now());
         borrowing.get().setEndsAt(LocalDate.now());
 
-        System.out.println("Increase one book on availableAmount...\nCleaning client register on this unit...\nRemoving bookUnit from Client");
-
-        List<Unit> books = client.getBooks();
-        books.remove(unit);
-
+        System.out.println("Increase one book on availableAmount");
         book.setAvailableAmount(book.getAvailableAmount() + 1);
-        unit.setClient(null);
+
+        System.out.println("Removing borrowing operation from this unit");
+        unit.setBorrowing(null);
 
         if(clearLoan.isPresent() && clearLoan.get().equals(true)) {
             //TODO: ADICIONAR PAGAMENTO PARCIAL DE MULTA DEPOIS [OU NÃO]
             client.setLoan(0);
         }
 
-        System.out.println("Finish borrow operation");
+        System.out.println("Saving changes...");
 
         try{
             var first = dbset.save(borrowing.get());

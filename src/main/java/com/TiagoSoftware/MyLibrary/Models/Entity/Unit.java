@@ -1,5 +1,6 @@
 package com.TiagoSoftware.MyLibrary.Models.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class Unit {
     @ManyToOne
     public Book book;
 
-    @ManyToOne
-    public Client client;
+    @OneToOne
+    @JsonIgnore
+    public Borrowing borrowing;
 }

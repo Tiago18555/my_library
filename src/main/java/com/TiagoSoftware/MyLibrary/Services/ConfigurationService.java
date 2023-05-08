@@ -27,7 +27,47 @@ public class ConfigurationService {
     @Transactional
     public ResponseModel ChangeConfiguration(ConfigurationDTO configurationDTO) {
         Configuration configuration = new Configuration();
-        BeanUtils.copyProperties(configurationDTO, configuration);
+
+        var foundConfig = dbset.findAll();
+
+        if(foundConfig.isEmpty()) {
+            BeanUtils.copyProperties(configurationDTO, configuration);
+            if(
+                    configurationDTO.getAssessment() == 0 ||
+                    configurationDTO.getTolerance() == 0 ||
+                    configurationDTO.getBorrowingLimit() == 0
+            ) {
+                return new ResponseModel("There's no previous config register, please put all 3 config properties on request", HttpStatus.OK);
+            }
+        } else {
+
+            var latestConfig = foundConfig
+                    .stream()
+                    .skip(foundConfig.stream().count() - 1)
+                    .limit(1)
+                    .collect(Collectors.toList());
+
+            configuration.setAssessment(
+                    configurationDTO.getAssessment() == null
+                            ? latestConfig.get(0).getAssessment()
+                            : configurationDTO.getAssessment()
+            );
+
+            configuration.setTolerance(
+                    configurationDTO.getTolerance() == null
+                            ? latestConfig.get(0).getTolerance()
+                            : configurationDTO.getTolerance()
+            );
+
+            configuration.setBorrowingLimit(
+                    configurationDTO.getBorrowingLimit() == null
+                            ? latestConfig.get(0).getBorrowingLimit()
+                            : configurationDTO.getBorrowingLimit()
+            );
+        }
+
+
+
         try{
             configuration.setStartedAt(new Date(System.currentTimeMillis()));
             System.out.println(configuration);

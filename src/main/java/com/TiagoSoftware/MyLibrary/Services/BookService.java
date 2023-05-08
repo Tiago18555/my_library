@@ -66,10 +66,9 @@ public class BookService {
                 return new ResponseModel("This books is already exists. Did you meant to change his quantity?", HttpStatus.FORBIDDEN);
             }
             var primary = dbset.save(book);
-            List<Unit> data2 = null;
 
             for(int i = 0; i < book.getAvailableAmount(); i++) {
-                var unitDTO = new BookUnitDTO(book, null);
+                var unitDTO = new BookUnitDTO(book);
                 var unit = new Unit();
                 BeanUtils.copyProperties(unitDTO, unit);
                 System.out.println(unit.getIbsn());
@@ -81,8 +80,8 @@ public class BookService {
             return new ResponseModel(data, HttpStatus.CREATED);
         }
         catch(Exception ex){
-            throw ex;
-            //return new ResponseModel("An error occurs: " + ex.getMessage() + "\n" + ex.getCause(), HttpStatus.SERVICE_UNAVAILABLE);
+            //throw ex;
+            return new ResponseModel("An error occurs: " + ex.getMessage() + "\n" + ex.getCause(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
@@ -110,7 +109,6 @@ public class BookService {
                     .filter( x -> x.getPublisher().getName().equals ( publisher.get() ) )
                     .collect(Collectors.toList());
             }
-
 
             if(publisher.isEmpty() && author.isEmpty()) {
                 if(onlyAvailable.isPresent() && onlyAvailable.get().equals(true) ) {
@@ -200,10 +198,9 @@ public class BookService {
             dbset.save(book);
 
             var primary = dbset.save(book);
-            List<Unit> data2 = null;
 
             for(int i = 0; i < newAmount; i++) {
-                var unitDTO = new BookUnitDTO(book, null);
+                var unitDTO = new BookUnitDTO(book);
                 var unit = new Unit();
                 BeanUtils.copyProperties(unitDTO, unit);
                 System.out.println(unit.getIbsn());
@@ -265,7 +262,7 @@ public class BookService {
         data.setAvailableAmount(book.get().getAvailableAmount());
         data.setBookUnits(Optional.of(book.get().getUnits()));
 
-        //var data = book.get();
+        //*********************************
 
         return new ResponseModel(data, HttpStatus.OK);
     }
@@ -296,7 +293,7 @@ public class BookService {
             var data = this
                     .mappingUnits(response)
                     .stream()
-                    .filter(x -> x.getClient() == null)
+                    .filter(x -> x.getBorrowing() == null)
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
@@ -311,7 +308,7 @@ public class BookService {
             var data = this
                     .mappingUnits(response)
                     .stream()
-                    .filter(x -> x.getClient() == null)
+                    .filter(x -> x.getBorrowing() == null)
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.I_AM_A_TEAPOT);
         }

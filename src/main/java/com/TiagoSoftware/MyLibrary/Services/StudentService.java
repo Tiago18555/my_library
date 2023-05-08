@@ -2,12 +2,7 @@ package com.TiagoSoftware.MyLibrary.Services;
 
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientUpdateDTO;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Author;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Client;
-import com.TiagoSoftware.MyLibrary.Models.Entity.Publisher;
-import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.JoinBookResponseModel;
-import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.PublisherResponse;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.ClientRepository;
 import org.springframework.beans.BeanUtils;
@@ -90,7 +85,7 @@ public class StudentService {
             student.setCpf(clientUpdateDTO.getCpf());
             student.setName(clientUpdateDTO.getName() != null ? clientUpdateDTO.getName() : foundStudent.getName());
             student.setLoan(clientUpdateDTO.getLoan() != 0 ? clientUpdateDTO.getLoan() : foundStudent.getLoan());
-            student.setBooks(clientUpdateDTO.getBooks() != null ? clientUpdateDTO.getBooks() : foundStudent.getBooks());
+            student.setBorrowings(clientUpdateDTO.getBorrowings() != null ? clientUpdateDTO.getBorrowings() : foundStudent.getBorrowings());
             student.setIsInactive(false);
             student.setIsProfessor(false);
             student.setId(foundStudent.getId());
