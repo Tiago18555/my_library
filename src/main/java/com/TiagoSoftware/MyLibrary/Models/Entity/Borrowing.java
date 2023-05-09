@@ -1,6 +1,8 @@
 package com.TiagoSoftware.MyLibrary.Models.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -30,16 +32,11 @@ public class Borrowing {
     @OneToOne
     public Unit unit;
 
+    //@JsonBackReference
     @ManyToOne
-    @JsonIgnore
+    @JsonManagedReference
     public Client client;
 
     @OneToOne
     public Configuration configuration;
 }
-/*
-*   @ManyToOne(fetch = FetchType.EAGER, optional = false)
-  @JoinColumn(name = "tutorial_id", nullable = false)
-  @OnDelete(action = OnDeleteAction.CASCADE)
-* */
-
