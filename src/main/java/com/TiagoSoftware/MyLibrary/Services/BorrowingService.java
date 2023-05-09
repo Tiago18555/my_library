@@ -97,7 +97,7 @@ public class BorrowingService {
                 return new ResponseModel("This id belongs to a professor.", HttpStatus.BAD_REQUEST);
             }
             if(borrowings.isEmpty()) {
-                return new ResponseModel("There's none borrowing with this student", HttpStatus.NOT_FOUND);
+                return new ResponseModel(client, HttpStatus.OK);
             }
             for(Borrowing item : borrowings) {
                 var configuration = configurationRepository.findById(item.getConfiguration().getId());
