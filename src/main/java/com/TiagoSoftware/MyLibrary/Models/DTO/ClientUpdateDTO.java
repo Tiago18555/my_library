@@ -18,9 +18,4 @@ public class ClientUpdateDTO {
 
     @Size(min = 3, max = 40)
     public String name;
-
-    public float loan;
-
-    public List<Borrowing> borrowings;
-
 }

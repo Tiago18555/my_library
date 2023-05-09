@@ -82,12 +82,12 @@ public class ProfessorService {
                 return new ResponseModel("This cpf belongs to a student.", HttpStatus.BAD_REQUEST);
             }
 
-            professor.setCpf(clientUpdateDTO.getCpf());
+            professor.setCpf(foundProfessor.getCpf());
             professor.setName(clientUpdateDTO.getName() != null ? clientUpdateDTO.getName() : foundProfessor.getName());
-            professor.setLoan(clientUpdateDTO.getLoan() != 0 ? clientUpdateDTO.getLoan() : foundProfessor.getLoan());
-            professor.setBorrowings(clientUpdateDTO.getBorrowings() != null ? clientUpdateDTO.getBorrowings() : foundProfessor.getBorrowings());
+            professor.setLoan(foundProfessor.getLoan());
+            professor.setBorrowings(foundProfessor.getBorrowings());
             professor.setIsInactive(false);
-            professor.setIsProfessor(false);
+            professor.setIsProfessor(true);
             professor.setId(foundProfessor.getId());
 
             return new ResponseModel(dbset.save(professor), HttpStatus.OK);
