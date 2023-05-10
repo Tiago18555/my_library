@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Data
-public class BookUpdateDTO{
+public class BookUpdateDTO {
 
     @NotNull
     public UUID id;

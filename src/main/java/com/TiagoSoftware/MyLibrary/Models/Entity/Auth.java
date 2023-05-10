@@ -32,8 +32,6 @@ public class Auth implements UserDetails, Serializable {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
-
-    // TODO: testar get/set via @Data
     @Override
     public String getPassword() {
         return this.password;

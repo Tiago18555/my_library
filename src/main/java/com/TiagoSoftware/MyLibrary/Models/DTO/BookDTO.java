@@ -13,7 +13,7 @@ import java.util.UUID;
 public class BookDTO {
 
     @NotBlank
-    @Size(min = 3, max = 40)
+    @Size(min = 3, max = 128)
     public String title;
 
     @NotNull

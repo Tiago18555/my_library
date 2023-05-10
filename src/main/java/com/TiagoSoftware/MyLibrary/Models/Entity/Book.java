@@ -15,7 +15,7 @@ public class Book {
     @GeneratedValue
     public UUID id;
 
-    @Column(nullable = false, length = 40, unique = true)
+    @Column(nullable = false, length = 128, unique = true)
     public String title;
 
     @OneToOne

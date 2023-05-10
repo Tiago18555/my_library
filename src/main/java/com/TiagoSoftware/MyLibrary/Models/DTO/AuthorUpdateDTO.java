@@ -8,10 +8,8 @@ import java.util.UUID;
 @Data
 public class AuthorUpdateDTO {
 
-    @Size(min = 3)
-    @Size(max = 40)
+    @Size(min = 3, max = 128)
     public String name;
 
-    @Size(max = 40)
     public UUID id;
 }

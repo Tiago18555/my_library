@@ -15,7 +15,7 @@ public class Publisher {
     @GeneratedValue
     public UUID id;
 
-    @Column(nullable = false, unique = true, length = 40)
+    @Column(nullable = false, unique = true, length = 128)
     public String name;
 
     @Column(nullable = false, unique = true, length = 40)

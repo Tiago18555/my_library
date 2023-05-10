@@ -14,6 +14,6 @@ public class ClientUpdateDTO {
     @NotBlank
     public String cpf;
 
-    @Size(min = 3, max = 40)
+    @Size(min = 3, max = 128)
     public String name;
 }

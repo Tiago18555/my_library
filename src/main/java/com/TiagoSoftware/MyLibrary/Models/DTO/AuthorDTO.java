@@ -11,7 +11,7 @@ public class AuthorDTO {
 
     @NotBlank
     @Size(min = 3)
-    @Size(max = 40)
+    @Size(max = 128)
     public String name;
 }
 

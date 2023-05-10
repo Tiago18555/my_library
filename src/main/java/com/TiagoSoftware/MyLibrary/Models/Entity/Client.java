@@ -18,7 +18,7 @@ public class Client {
     @GeneratedValue
     public UUID id;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false, length = 128)
     public String name;
 
     @Column(nullable = false, unique = true, length = 14)
