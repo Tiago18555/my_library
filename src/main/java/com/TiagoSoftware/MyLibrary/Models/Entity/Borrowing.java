@@ -32,9 +32,9 @@ public class Borrowing {
     @OneToOne
     public Unit unit;
 
-    //@JsonBackReference
+    //@JsonManagedReference
     @ManyToOne
-    @JsonManagedReference
+    @JsonBackReference
     public Client client;
 
     @OneToOne

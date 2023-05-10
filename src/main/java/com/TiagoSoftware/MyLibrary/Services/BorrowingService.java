@@ -127,8 +127,6 @@ public class BorrowingService {
             System.out.println("client.getloan: " + client.get().getLoan());
             var data = clientRepository.save(client.get());
 
-            //data.getBooks()
-
             return new ResponseModel(
                     data,
                     HttpStatus.OK

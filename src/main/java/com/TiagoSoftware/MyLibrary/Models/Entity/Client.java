@@ -30,9 +30,9 @@ public class Client {
     @Column(nullable = true)
     public double loan;
 
-    //@JsonManagedReference
+    //@JsonBackReference
     @OneToMany
-    @JsonBackReference
+    @JsonManagedReference
     public List<Borrowing> borrowings;
 
     public Boolean isInactive;
