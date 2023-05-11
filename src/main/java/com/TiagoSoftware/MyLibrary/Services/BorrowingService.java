@@ -126,6 +126,14 @@ public class BorrowingService {
 
             System.out.println("client.getloan: " + client.get().getLoan());
             var data = clientRepository.save(client.get());
+            data.setBorrowings(
+                    data.getBorrowings()
+                            .stream()
+                            .sorted(Comparator.comparing(x -> x.getEndsAt()))
+                            .collect(Collectors.toList())
+            );
+
+
 
             return new ResponseModel(
                     data,
