@@ -129,7 +129,7 @@ public class BorrowingService {
             data.setBorrowings(
                     data.getBorrowings()
                             .stream()
-                            .sorted(Comparator.comparing(x -> x.getEndsAt()))
+                            .sorted(Comparator.comparing(x -> x.getDeadLine(), Collections.reverseOrder()))
                             .collect(Collectors.toList())
             );
 
