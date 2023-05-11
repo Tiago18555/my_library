@@ -2,6 +2,7 @@ package com.TiagoSoftware.MyLibrary.Services;
 
 import com.TiagoSoftware.MyLibrary.Models.DTO.BookUnitUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.Entity.*;
+import com.TiagoSoftware.MyLibrary.Models.Responses.Client.ClientResponse;
 import com.TiagoSoftware.MyLibrary.Models.Responses.DataContainer;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.*;
@@ -133,8 +134,6 @@ public class BorrowingService {
                             .collect(Collectors.toList())
             );
 
-
-
             return new ResponseModel(
                     data,
                     HttpStatus.OK
@@ -157,6 +156,11 @@ public class BorrowingService {
                     .findAll()
                     .stream()
                     .filter(x -> !x.getClient().getIsProfessor())
+                    .map(x -> {
+                        var cr = new ClientResponse();
+                        BeanUtils.copyProperties(x, cr);
+                        return cr;
+                    })
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
@@ -165,6 +169,11 @@ public class BorrowingService {
                     .findAll()
                     .stream()
                     .filter(x -> x.getClient().getIsProfessor())
+                    .map(x -> {
+                        var cr = new ClientResponse();
+                        BeanUtils.copyProperties(x, cr);
+                        return cr;
+                    })
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
@@ -173,6 +182,11 @@ public class BorrowingService {
                     .findAll()
                     .stream()
                     .filter(x -> x.getEndsAt() == null)
+                    .map(x -> {
+                        var cr = new ClientResponse();
+                        BeanUtils.copyProperties(x, cr);
+                        return cr;
+                    })
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
@@ -181,6 +195,11 @@ public class BorrowingService {
                     .findAll()
                     .stream()
                     .filter(x -> x.getEndsAt() != null)
+                    .map(x -> {
+                        var cr = new ClientResponse();
+                        BeanUtils.copyProperties(x, cr);
+                        return cr;
+                    })
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
@@ -190,6 +209,11 @@ public class BorrowingService {
                     .stream()
                     .filter(x -> x.getEndsAt() == null)
                     .filter(x -> Period.between(LocalDate.now(), x.getDeadLine()).getDays() <= 7)
+                    .map(x -> {
+                        var cr = new ClientResponse();
+                        BeanUtils.copyProperties(x, cr);
+                        return cr;
+                    })
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
