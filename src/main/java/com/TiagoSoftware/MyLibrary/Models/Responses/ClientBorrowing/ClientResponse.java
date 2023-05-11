@@ -1,14 +1,9 @@
-package com.TiagoSoftware.MyLibrary.Models.Responses.Client;
+package com.TiagoSoftware.MyLibrary.Models.Responses.ClientBorrowing;
 
 import com.TiagoSoftware.MyLibrary.Models.Entity.Borrowing;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.util.List;
 import java.util.UUID;
 
