@@ -122,7 +122,6 @@ public class ProfessorService {
             return new ResponseModel("This id belongs to a student.", HttpStatus.BAD_REQUEST);
         }
 
-        //Student.isInactive == false  if there's a parameter of restore = true
         professor.get().setIsInactive(restore.isPresent() && restore.get().equals(true) ? false : true);
 
         dbset.save(professor.get());

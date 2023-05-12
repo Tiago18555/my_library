@@ -91,7 +91,6 @@ public class BookService {
                 return new ResponseModel("Use just one search filter per request", HttpStatus.BAD_REQUEST);
             }
 
-            List<JoinBookResponseModel> data = new ArrayList<>();
             List<Book> books = new ArrayList<>();
 
             if(author.isPresent() && publisher.isEmpty() && onlyAvailable.isEmpty()) {
@@ -122,21 +121,22 @@ public class BookService {
                 }
             }
 
-            for(Book book : books){
-                JoinBookResponseModel target = new JoinBookResponseModel();
+            List<JoinBookResponseModel> data = books.stream().map(book -> {
+                JoinBookResponseModel jbrm = new JoinBookResponseModel();
 
-                target.setId(Optional.of(book.getId()));
-                target.setTitle(book.getTitle());
-                target.setAuthorName(book.getAuthor().getName());
-                target.setPublisher( new PublisherResponse(
+                jbrm.setId(Optional.of(book.getId()));
+                jbrm.setTitle(book.getTitle());
+                jbrm.setAuthorName(book.getAuthor().getName());
+                jbrm.setPublisher( new PublisherResponse(
                         book.getPublisher().getName(),
                         book.getPublisher().getCnpj()
                 ));
-                target.setDescription(book.getDescription());
-                target.setAvailableAmount(book.getAvailableAmount());
+                jbrm.setDescription(book.getDescription());
+                jbrm.setAvailableAmount(book.getAvailableAmount());
+                jbrm.setBookUnits(book.getUnits().stream().collect(Collectors.toList()));
 
-                data.add(target);
-            }
+                return jbrm;
+            }).collect(Collectors.toList());
 
             return new ResponseModel(data, HttpStatus.OK);
         }
@@ -253,7 +253,6 @@ public class BookService {
             return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
         }
 
-
         JoinBookResponseModel data = new JoinBookResponseModel();
 
         data.setId(Optional.of(book.get().getId()));
@@ -265,9 +264,7 @@ public class BookService {
         ));
         data.setDescription(book.get().getDescription());
         data.setAvailableAmount(book.get().getAvailableAmount());
-        data.setBookUnits(Optional.of(book.get().getUnits()));
-
-        //*********************************
+        data.setBookUnits(book.get().getUnits());
 
         return new ResponseModel(data, HttpStatus.OK);
     }

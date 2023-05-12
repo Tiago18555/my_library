@@ -363,8 +363,6 @@ public class BorrowingService {
             var Book = bookRepository.save(book);
 
             unit.setBorrowing(borrowing);
-
-            System.out.println(">>>>>>>>>> FOI AQUI MERMO");
             client.borrowings.add(borrowing);
 
             var Unit = bookUnitRepository.save(unit);

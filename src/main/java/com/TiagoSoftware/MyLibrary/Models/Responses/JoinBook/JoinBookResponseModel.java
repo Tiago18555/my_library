@@ -19,5 +19,5 @@ public class JoinBookResponseModel {
     private PublisherResponse publisher;
     private String description;
     private int availableAmount;
-    private Optional<List<Unit>> bookUnits;
+    private List<Unit> bookUnits;
 }
