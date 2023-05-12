@@ -217,6 +217,11 @@ public class BookService {
 
     @Transactional
     public ResponseModel deleteUnit(BookUnitUpdateDTO bookUnitDTO) {
+
+        if(bookUnitDTO.getIbsn() == 0){
+            return new ResponseModel("Field \"ibsn\" cannot be null", HttpStatus.BAD_REQUEST);
+        }
+
         try {
             var unit = unitRepo.findByIbsn(bookUnitDTO.getIbsn());
             System.out.println(bookUnitDTO.getIbsn());

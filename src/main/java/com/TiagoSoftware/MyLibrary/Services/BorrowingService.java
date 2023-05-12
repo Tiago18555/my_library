@@ -237,13 +237,58 @@ public class BorrowingService {
         return new ResponseModel("String query not found", HttpStatus.BAD_REQUEST);
     }
 
+    private String SelectAvailableIbsn(String title) {
+        var foundBook = bookRepository.findByTitle(title);
+        if(foundBook.isEmpty()){
+            return "BNF";
+        }
+        var foundUnit = bookUnitRepository.findAllByBookId(foundBook.get().getId());
+        if(foundUnit.isEmpty()){
+            return "UNF";
+        }
+
+        var units = foundUnit;
+
+        if (units.stream().noneMatch(x -> x.getBorrowing() == null)) {
+            return "NOIBSN";
+        }
+
+        var data = units
+                .stream()
+                .filter(x -> x.getBorrowing() == null)
+                .limit(1)
+                .collect(Collectors.toList());
+
+        return data.get(0).getIbsn().toString();
+    }
+
     @Transactional
     public ResponseModel DoBorrow(UUID id, BookUnitUpdateDTO bookDTO, Optional<Integer> debug) {
 
         System.out.println("Starting New Borrow...");
         System.out.println("Checking book, unit and client fields...");
 
-        var foundUnit = bookUnitRepository.findById(bookDTO.getIbsn());
+        var ibsn = bookDTO.getIbsn();
+
+        if(bookDTO.getTitle() == null && bookDTO.getIbsn() == 0) {
+            return new ResponseModel("Both fields cannot be empty", HttpStatus.BAD_REQUEST);
+        }
+
+        if(bookDTO.getTitle() != null && bookDTO.getIbsn() == 0) {
+            var res = SelectAvailableIbsn(bookDTO.getTitle());
+            switch(res){
+                case"BNF":
+                    return new ResponseModel("Book not found", HttpStatus.NOT_FOUND);
+                case"UNF":
+                    return new ResponseModel("Unit not found", HttpStatus.NOT_FOUND);
+                case"NOIBSN":
+                    return new ResponseModel("There's no ibsn available for this book", HttpStatus.NOT_FOUND);
+                default:
+                    ibsn = Long.parseLong(res);
+            }
+        }
+
+        var foundUnit = bookUnitRepository.findById(ibsn);
         var foundClient = clientRepository.findById(id);
 
 

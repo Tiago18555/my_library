@@ -16,7 +16,6 @@ import java.util.UUID;
 @Data
 public class BookUnitUpdateDTO {
 
-    @NotNull
     public long ibsn;
 
     @Size(min = 3, max = 128)
