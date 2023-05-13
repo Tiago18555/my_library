@@ -95,7 +95,7 @@ public class BookService {
 
             if(author.isPresent() && publisher.isEmpty() && onlyAvailable.isEmpty()) {
                 books = dbset
-                    .findAllCompletely()
+                    .findAll()
                     .stream()
                     .filter( x -> x.getAuthor().getName().equals ( author.get() ) )
                     .collect(Collectors.toList());
@@ -103,7 +103,7 @@ public class BookService {
 
             if(publisher.isPresent() && author.isEmpty() && onlyAvailable.isEmpty()) {
                 books = dbset
-                    .findAllCompletely()
+                    .findAll()
                     .stream()
                     .filter( x -> x.getPublisher().getName().equals ( publisher.get() ) )
                     .collect(Collectors.toList());
@@ -112,12 +112,12 @@ public class BookService {
             if(publisher.isEmpty() && author.isEmpty()) {
                 if(onlyAvailable.isPresent() && onlyAvailable.get().equals(true) ) {
                     books = dbset
-                        .findAllCompletely()
+                        .findAll()
                         .stream()
                         .filter( x -> x.getAvailableAmount() > 1)
                         .collect(Collectors.toList());
                 } else {
-                    books = dbset.findAllCompletely();
+                    books = dbset.findAll();
                 }
             }
 /*
