@@ -29,7 +29,7 @@ public class Book {
 
     public int availableAmount;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     public List<Unit> units;
 }
 
