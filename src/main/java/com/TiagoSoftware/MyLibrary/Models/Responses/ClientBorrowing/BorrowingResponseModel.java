@@ -1,17 +1,18 @@
 package com.TiagoSoftware.MyLibrary.Models.Responses.ClientBorrowing;
 
-import com.TiagoSoftware.MyLibrary.Models.Entity.Client;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Configuration;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Unit;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
-public class BorrowingResponse {
+@AllArgsConstructor
+@NoArgsConstructor
+public class BorrowingResponseModel {
 
     public UUID id;
 

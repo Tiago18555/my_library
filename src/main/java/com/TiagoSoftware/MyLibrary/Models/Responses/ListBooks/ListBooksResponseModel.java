@@ -1,5 +1,6 @@
-package com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook;
+package com.TiagoSoftware.MyLibrary.Models.Responses.ListBooks;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Unit;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JoinBookResponseModel {
+public class ListBooksResponseModel {
 
     private Optional<UUID> id;
     private String title;
@@ -19,5 +20,7 @@ public class JoinBookResponseModel {
     private PublisherResponse publisher;
     private String description;
     private int availableAmount;
+
+    @JsonIgnoreProperties("book")
     private List<Unit> bookUnits;
 }

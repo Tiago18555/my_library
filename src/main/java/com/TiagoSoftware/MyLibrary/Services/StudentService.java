@@ -3,6 +3,7 @@ package com.TiagoSoftware.MyLibrary.Services;
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Client;
+import com.TiagoSoftware.MyLibrary.Models.Responses.ListClients.ListClientsResponseModel;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.ClientRepository;
 import org.springframework.beans.BeanUtils;
@@ -47,13 +48,18 @@ public class StudentService {
     }
 
     public ResponseModel listStudents(Optional<Boolean> showInactive) {
-        List<Client> data;
+        List<ListClientsResponseModel> data;
 
         if(showInactive.isPresent() && showInactive.get()) {
             data = dbset
                     .findAll()
                     .stream()
                     .filter(x -> !x.isProfessor)
+                    .map(x -> {
+                        var target = new ListClientsResponseModel();
+                        BeanUtils.copyProperties(x, target);
+                        return target;
+                    })
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
@@ -63,6 +69,11 @@ public class StudentService {
                 .stream()
                 .filter(x -> !x.isInactive)
                 .filter(x -> !x.isProfessor)
+                .map(x -> {
+                    var target = new ListClientsResponseModel();
+                    BeanUtils.copyProperties(x, target);
+                    return target;
+                })
                 .collect(Collectors.toList());
 
         return new ResponseModel(data, HttpStatus.OK);
@@ -122,7 +133,6 @@ public class StudentService {
             return new ResponseModel("This id belongs to a professor.", HttpStatus.BAD_REQUEST);
         }
 
-        //Student.isInactive == false  if there's a parameter of restore = true
         student.get().setIsInactive(restore.isPresent() && restore.get().equals(true) ? false : true);
 
         dbset.save(student.get());

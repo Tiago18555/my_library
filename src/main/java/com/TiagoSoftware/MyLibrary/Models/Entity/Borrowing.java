@@ -19,7 +19,6 @@ public class Borrowing {
 
     @Id
     @GeneratedValue
-    //@JsonIgnore
     public UUID id;
 
     @Column(nullable = false)

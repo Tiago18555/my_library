@@ -62,7 +62,7 @@ public class BorrowingController {
     }
 
     @GetMapping
-    @ApiOperation(value = "Lista todos os empréstimos")
+    @ApiOperation(value = "Lista todos os empréstimos", produces = "O Limite de resultados para empréstimos finalizados é 500.")
     public ResponseEntity ListAllBorrowings(@RequestParam Optional<String> filter) {
         var response = borrowingService.ListAllBorrowings(filter);
 

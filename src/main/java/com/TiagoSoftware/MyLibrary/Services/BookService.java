@@ -6,8 +6,8 @@ import com.TiagoSoftware.MyLibrary.Models.Entity.Book;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Unit;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Publisher;
 import com.TiagoSoftware.MyLibrary.Models.Responses.DataContainer;
-import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.JoinBookResponseModel;
-import com.TiagoSoftware.MyLibrary.Models.Responses.JoinBook.PublisherResponse;
+import com.TiagoSoftware.MyLibrary.Models.Responses.ListBooks.ListBooksResponseModel;
+import com.TiagoSoftware.MyLibrary.Models.Responses.ListBooks.PublisherResponse;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Models.Responses.Unit.UnitResponse;
 import com.TiagoSoftware.MyLibrary.Repositories.BookRepository;
@@ -121,8 +121,8 @@ public class BookService {
                 }
             }
 
-            List<JoinBookResponseModel> data = books.stream().map(book -> {
-                JoinBookResponseModel jbrm = new JoinBookResponseModel();
+            List<ListBooksResponseModel> data = books.stream().map(book -> {
+                ListBooksResponseModel jbrm = new ListBooksResponseModel();
 
                 jbrm.setId(Optional.of(book.getId()));
                 jbrm.setTitle(book.getTitle());
@@ -253,7 +253,7 @@ public class BookService {
             return new ResponseModel("Book not found.", HttpStatus.NOT_FOUND);
         }
 
-        JoinBookResponseModel data = new JoinBookResponseModel();
+        ListBooksResponseModel data = new ListBooksResponseModel();
 
         data.setId(Optional.of(book.get().getId()));
         data.setTitle(book.get().getTitle());

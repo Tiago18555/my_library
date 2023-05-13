@@ -3,6 +3,7 @@ package com.TiagoSoftware.MyLibrary.Services;
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientDTO;
 import com.TiagoSoftware.MyLibrary.Models.DTO.ClientUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.Entity.Client;
+import com.TiagoSoftware.MyLibrary.Models.Responses.ListClients.ListClientsResponseModel;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
 import com.TiagoSoftware.MyLibrary.Repositories.ClientRepository;
 import org.springframework.beans.BeanUtils;
@@ -47,13 +48,18 @@ public class ProfessorService {
     }
 
     public ResponseModel listProfessors(Optional<Boolean> showInactive) {
-        List<Client> data;
+        List<ListClientsResponseModel> data;
 
         if(showInactive.isPresent() && showInactive.get()) {
             data = dbset
                     .findAll()
                     .stream()
                     .filter(x -> x.isProfessor)
+                    .map(x -> {
+                        var target = new ListClientsResponseModel();
+                        BeanUtils.copyProperties(x, target);
+                        return target;
+                    })
                     .collect(Collectors.toList());
             return new ResponseModel(data, HttpStatus.OK);
         }
@@ -63,6 +69,11 @@ public class ProfessorService {
                 .stream()
                 .filter(x -> !x.isInactive)
                 .filter(x -> x.isProfessor)
+                .map(x -> {
+                    var target = new ListClientsResponseModel();
+                    BeanUtils.copyProperties(x, target);
+                    return target;
+                })
                 .collect(Collectors.toList());
 
         return new ResponseModel(data, HttpStatus.OK);

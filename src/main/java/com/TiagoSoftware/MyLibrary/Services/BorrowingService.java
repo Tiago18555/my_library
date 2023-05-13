@@ -2,7 +2,7 @@ package com.TiagoSoftware.MyLibrary.Services;
 
 import com.TiagoSoftware.MyLibrary.Models.DTO.BookUnitUpdateDTO;
 import com.TiagoSoftware.MyLibrary.Models.Entity.*;
-import com.TiagoSoftware.MyLibrary.Models.Responses.ClientBorrowing.BorrowingResponse;
+import com.TiagoSoftware.MyLibrary.Models.Responses.ClientBorrowing.BorrowingResponseModel;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ClientBorrowing.ClientResponse;
 import com.TiagoSoftware.MyLibrary.Models.Responses.DataContainer;
 import com.TiagoSoftware.MyLibrary.Models.Responses.ResponseModel;
@@ -158,7 +158,7 @@ public class BorrowingService {
                     .stream()
                     .filter(x -> !x.getClient().getIsProfessor())
                     .map(x -> {
-                        var br = new BorrowingResponse();
+                        var br = new BorrowingResponseModel();
                         var cr = new ClientResponse();
                         BeanUtils.copyProperties(x, br);
                         BeanUtils.copyProperties(x.getClient(), cr);
@@ -174,7 +174,7 @@ public class BorrowingService {
                     .stream()
                     .filter(x -> x.getClient().getIsProfessor())
                     .map(x -> {
-                        var br = new BorrowingResponse();
+                        var br = new BorrowingResponseModel();
                         var cr = new ClientResponse();
                         BeanUtils.copyProperties(x, br);
                         BeanUtils.copyProperties(x.getClient(), cr);
@@ -190,7 +190,7 @@ public class BorrowingService {
                     .stream()
                     .filter(x -> x.getEndsAt() == null)
                     .map(x -> {
-                        var br = new BorrowingResponse();
+                        var br = new BorrowingResponseModel();
                         var cr = new ClientResponse();
                         BeanUtils.copyProperties(x, br);
                         BeanUtils.copyProperties(x.getClient(), cr);
@@ -206,7 +206,24 @@ public class BorrowingService {
                     .stream()
                     .filter(x -> x.getEndsAt() != null)
                     .map(x -> {
-                        var br = new BorrowingResponse();
+                        var br = new BorrowingResponseModel();
+                        var cr = new ClientResponse();
+                        BeanUtils.copyProperties(x, br);
+                        BeanUtils.copyProperties(x.getClient(), cr);
+                        br.setClient(cr);
+                        return br;
+                    })
+                    .limit(500)
+                    .collect(Collectors.toList());
+            return new ResponseModel(data, HttpStatus.OK);
+        }
+        if(filter.get().equals("allfinished")) {
+            var data = dbset
+                    .findAll()
+                    .stream()
+                    .filter(x -> x.getEndsAt() != null)
+                    .map(x -> {
+                        var br = new BorrowingResponseModel();
                         var cr = new ClientResponse();
                         BeanUtils.copyProperties(x, br);
                         BeanUtils.copyProperties(x.getClient(), cr);
@@ -223,7 +240,7 @@ public class BorrowingService {
                     .filter(x -> x.getEndsAt() == null)
                     .filter(x -> Period.between(LocalDate.now(), x.getDeadLine()).getDays() <= 7)
                     .map(x -> {
-                        var br = new BorrowingResponse();
+                        var br = new BorrowingResponseModel();
                         var cr = new ClientResponse();
                         BeanUtils.copyProperties(x, br);
                         BeanUtils.copyProperties(x.getClient(), cr);
