@@ -120,7 +120,7 @@ public class BookService {
                     books = dbset.findAllCompletly();
                 }
             }
-
+/*
             List<JoinBookResponseModel> data = books.stream().map(book -> {
                 JoinBookResponseModel jbrm = new JoinBookResponseModel();
 
@@ -136,9 +136,9 @@ public class BookService {
                 jbrm.setBookUnits(book.getUnits());
 
                 return jbrm;
-            }).collect(Collectors.toList());
+            }).collect(Collectors.toList());*/
 
-            return new ResponseModel(data, HttpStatus.OK);
+            return new ResponseModel(books, HttpStatus.OK);
         }
         catch(Exception ex){
             throw ex;
