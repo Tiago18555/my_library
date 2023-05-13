@@ -13,6 +13,6 @@ import java.util.UUID;
 public interface BookRepository extends JpaRepository<Book, UUID> {
     Optional<Book> findByTitle(String title);
     List<Book> findAll();
-    @Query( value = "SELECT b from Book b inner join b.author a inner join b.publisher p" )
+    @Query( value = "SELECT b, a, p from Book b INNER JOIN b.author a INNER JOIN b.publisher p" )
     List<Book> findAllCompletely();
 }
