@@ -133,7 +133,7 @@ public class BookService {
                 ));
                 jbrm.setDescription(book.getDescription());
                 jbrm.setAvailableAmount(book.getAvailableAmount());
-                jbrm.setBookUnits(book.getUnits().stream().collect(Collectors.toList()));
+                jbrm.setBookUnits(book.getUnits());
 
                 return jbrm;
             }).collect(Collectors.toList());
