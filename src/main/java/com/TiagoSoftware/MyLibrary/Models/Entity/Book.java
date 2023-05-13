@@ -1,5 +1,6 @@
 package com.TiagoSoftware.MyLibrary.Models.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 
@@ -30,6 +31,7 @@ public class Book {
     public int availableAmount;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     public List<Unit> units;
 }
 
