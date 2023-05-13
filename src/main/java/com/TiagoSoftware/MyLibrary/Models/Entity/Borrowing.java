@@ -32,7 +32,6 @@ public class Borrowing {
     @OneToOne
     public Unit unit;
 
-    //@JsonManagedReference
     @ManyToOne
     @JsonBackReference
     public Client client;

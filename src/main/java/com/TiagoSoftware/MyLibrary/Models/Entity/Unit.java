@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "book_unit")
+@Table(name = "unit")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +17,8 @@ public class Unit {
     @GeneratedValue
     public Long ibsn;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
     public Book book;
 
     @OneToOne

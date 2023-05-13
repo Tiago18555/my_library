@@ -29,7 +29,7 @@ public class Book {
 
     public int availableAmount;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<Unit> units;
 }
 
