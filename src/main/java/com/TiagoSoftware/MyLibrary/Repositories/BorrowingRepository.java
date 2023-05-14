@@ -13,7 +13,9 @@ import java.util.UUID;
 
 public interface BorrowingRepository extends JpaRepository<Borrowing, UUID> {
 
-    List<Borrowing> findAllByClientId(UUID client);
+    List<Borrowing> findAllByClientCpf(String cpf);
+
+    List<Borrowing> findAllByClientId(UUID id);
     @Query( value = "SELECT b FROM Borrowing b JOIN b.unit u WHERE u.ibsn = :ibsn AND b.endsAt IS NULL" )
     Optional<Borrowing> findOpenBorrowingsByIbsn(@Param("ibsn") Long ibsn);
 }

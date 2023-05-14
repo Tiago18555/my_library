@@ -84,22 +84,22 @@ public class ProfessorService {
         var professor = new Client();
 
         try {
-            Client foundProfessor = dbset.findByCpf(clientUpdateDTO.getCpf());
+            var foundProfessor = dbset.findByCpf(clientUpdateDTO.getCpf());
             if(foundProfessor == null) {
                 return new ResponseModel("Professor not found.", HttpStatus.NOT_FOUND);
             }
 
-            if(foundProfessor.getIsProfessor().equals(false)){
+            if(foundProfessor.get().getIsProfessor().equals(false)){
                 return new ResponseModel("This cpf belongs to a student.", HttpStatus.BAD_REQUEST);
             }
 
-            professor.setCpf(foundProfessor.getCpf());
-            professor.setName(clientUpdateDTO.getName() != null ? clientUpdateDTO.getName() : foundProfessor.getName());
-            professor.setLoan(foundProfessor.getLoan());
-            professor.setBorrowings(foundProfessor.getBorrowings());
+            professor.setCpf(foundProfessor.get().getCpf());
+            professor.setName(clientUpdateDTO.getName() != null ? clientUpdateDTO.getName() : foundProfessor.get().getName());
+            professor.setLoan(foundProfessor.get().getLoan());
+            professor.setBorrowings(foundProfessor.get().getBorrowings());
             professor.setIsInactive(false);
             professor.setIsProfessor(true);
-            professor.setId(foundProfessor.getId());
+            professor.setId(foundProfessor.get().getId());
 
             return new ResponseModel(dbset.save(professor), HttpStatus.OK);
         }
@@ -110,12 +110,12 @@ public class ProfessorService {
     }
 
     public ResponseModel getProfessorByCpf(String cpf){
-        Client data = dbset.findByCpf(cpf);
-        if(data == null || data.getCpf().isEmpty()) {
+        var data = dbset.findByCpf(cpf);
+        if(data == null || data.get().getCpf().isEmpty()) {
             return new ResponseModel("Professor not found.", HttpStatus.NOT_FOUND);
         }
 
-        if(data.isProfessor.equals(false)) {
+        if(data.get().isProfessor.equals(false)) {
             return new ResponseModel("This cpf belongs to a student.", HttpStatus.BAD_REQUEST);
         }
 

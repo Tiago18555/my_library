@@ -29,10 +29,10 @@ public class BorrowingController {
         this.borrowingService = borrowingService;
     }
 
-    @PostMapping("{id}")
+    @PostMapping("{cpf}")
     @ApiOperation(value = "Realiza o empréstimo")
-    public ResponseEntity DoBorrow(@PathVariable UUID id, @RequestBody BookUnitUpdateDTO book, @RequestParam Optional<Integer> debugDelay) {
-        var response = borrowingService.DoBorrow(id, book, debugDelay);
+    public ResponseEntity DoBorrow(@PathVariable String cpf, @RequestBody BookUnitUpdateDTO book, @RequestParam Optional<Integer> debugDelay) {
+        var response = borrowingService.DoBorrow(cpf, book, debugDelay);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
@@ -53,10 +53,10 @@ public class BorrowingController {
         return new ResponseEntity<>(response, response.getHttpstatus());
     }
 
-    @PatchMapping("{id}")
+    @PatchMapping("{cpf}")
     @ApiOperation(value = "Realiza a devolução")
-    public ResponseEntity DoDevolution(@PathVariable UUID id, @RequestBody BookUnitUpdateDTO book, @RequestParam Optional<Boolean> cleanLoan) {
-        var response = borrowingService.DoDevolution(id, book, cleanLoan);
+    public ResponseEntity DoDevolution(@PathVariable String cpf, @RequestBody BookUnitUpdateDTO book, @RequestParam Optional<Boolean> cleanLoan) {
+        var response = borrowingService.DoDevolution(cpf, book, cleanLoan);
 
         return new ResponseEntity<>(response, response.getHttpstatus());
     }

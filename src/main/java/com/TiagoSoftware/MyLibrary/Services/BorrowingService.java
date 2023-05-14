@@ -280,7 +280,7 @@ public class BorrowingService {
     }
 
     @Transactional
-    public ResponseModel DoBorrow(UUID id, BookUnitUpdateDTO bookDTO, Optional<Integer> debug) {
+    public ResponseModel DoBorrow(String cpf, BookUnitUpdateDTO bookDTO, Optional<Integer> debug) {
 
         System.out.println("Starting New Borrow...");
         System.out.println("Checking book, unit and client fields...");
@@ -306,7 +306,7 @@ public class BorrowingService {
         }
 
         var foundUnit = bookUnitRepository.findById(ibsn);
-        var foundClient = clientRepository.findById(id);
+        var foundClient = clientRepository.findByCpf(cpf);
 
 
         if(foundUnit.isEmpty() || foundUnit.get().getBorrowing() != null) {
@@ -394,12 +394,12 @@ public class BorrowingService {
     }
 
     @Transactional
-    public ResponseModel DoDevolution(UUID id, BookUnitUpdateDTO bookDTO, Optional<Boolean> clearLoan) {
+    public ResponseModel DoDevolution(String cpf, BookUnitUpdateDTO bookDTO, Optional<Boolean> clearLoan) {
         System.out.println("Starting New Devolution...");
         System.out.println("Checking book, unit and client fields...");
 
         var foundUnit = bookUnitRepository.findById(bookDTO.getIbsn());
-        var foundClient = clientRepository.findById(id);
+        var foundClient = clientRepository.findByCpf(cpf);
 
 
         if(foundUnit.isEmpty() || foundUnit.get().getBorrowing() == null) {
