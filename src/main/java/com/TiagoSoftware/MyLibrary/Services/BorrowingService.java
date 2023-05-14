@@ -376,16 +376,15 @@ public class BorrowingService {
         System.out.println("Finish borrow operation");
 
         try {
-            var Borrowing = dbset.save(borrowing);
-            var Book = bookRepository.save(book);
+            var data = dbset.save(borrowing);
+            bookRepository.save(book);
 
             unit.setBorrowing(borrowing);
             client.borrowings.add(borrowing);
 
-            var Unit = bookUnitRepository.save(unit);
-            var Client = clientRepository.save(client);
+            bookUnitRepository.save(unit);
+            clientRepository.save(client);
 
-            var data = new DataContainer(Borrowing, Book, Unit, Client);
             return new ResponseModel(data, HttpStatus.CREATED);
         }
         catch (Exception ex) {
@@ -453,11 +452,10 @@ public class BorrowingService {
         System.out.println("Saving changes...");
 
         try{
-            var first = dbset.save(borrowing.get());
-            var second = bookRepository.save(book);
-            var third = bookUnitRepository.save(unit);
-            var fourth = clientRepository.save(client);
-            var data = new DataContainer(first, second, third, fourth);
+            var data = dbset.save(borrowing.get());
+            bookRepository.save(book);
+            bookUnitRepository.save(unit);
+            clientRepository.save(client);
             return new ResponseModel(data, HttpStatus.CREATED);
         }
         catch (Exception ex) {
